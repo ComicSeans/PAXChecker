@@ -40,7 +40,7 @@ public class SettingsHandler {
    * Preferences will likely be incorrect.
    */
   public static void saveAllPrefs() {
-    saveAllPrefs(PAXChecker.getRefreshTime(), Browser.isCheckingPaxWebsite(), Browser.isCheckingShowclix(), Browser.getExpo(), UpdateHandler.getUseBeta());
+    saveAllPrefs(PAXChecker.getRefreshTime(), Browser.isCheckingPaxWebsite(), Browser.isCheckingShowclix(), Browser.getExpo());
   }
 
   /**
@@ -51,9 +51,8 @@ public class SettingsHandler {
    * @param checkPax True to check the PAX website, false to not
    * @param checkShowclix True to check the Showclix website, false to not
    * @param expo The Expo being checked for. Note it should be in "PAX XXXX" format.
-   * @param useBeta True to use BETA versions, false to not
    */
-  public static void saveAllPrefs(int refreshTime, boolean checkPax, boolean checkShowclix, String expo, boolean useBeta) {
+  public static void saveAllPrefs(int refreshTime, boolean checkPax, boolean checkShowclix, String expo) {
     try {
       myPrefs.sync();
     } catch (BackingStoreException bSE) {
@@ -68,7 +67,6 @@ public class SettingsHandler {
       saveEvent(expo == null ? "" : expo);
       saveCellNum();
       saveEmail();
-      saveUseBeta(useBeta);
       System.out.println("Pax = " + checkPax + ", Showclix = " + checkShowclix + ", Expo = " + expo);
       myPrefs.flush();
     } catch (BackingStoreException bSE) {
@@ -282,15 +280,6 @@ public class SettingsHandler {
    */
   public static void saveLastEvent(String link) {
     saveLastEvent(Browser.getExpo(), link);
-  }
-
-  /**
-   * Saves whether or not to use BETA versions.
-   * @param use BETA version preference
-   */
-  public static void saveUseBeta(boolean use) {
-    System.out.println("Save beta: " + use);
-    myPrefs.putBoolean(PREFTYPES.PAXCHECK_USE_BETA.name(), use);
   }
 
   /**

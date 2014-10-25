@@ -27,64 +27,6 @@ public class PAXChecker {
   }
 
   /**
-   * Starts a new non-daemon Thread that checks the websites for updates. This Thread also updates the Status GUI.
-   */
-  public static void startCheckingWebsites() {
-    continueProgram(new Runnable() {
-      @Override
-      public void run() {
-//        setup = null;
-        savePrefsInBackground();
-        if (!Browser.checkShowclixLink(SettingsHandler.getLastEvent())) {
-          SettingsHandler.saveLastEvent(Browser.getShowclixLink());
-        }
-        //System.gc();
-//        status = new Status();
-//        setStatusIconInBackground(getIconName(Browser.getExpo()));
-        long startMS;
-        int seconds = getRefreshTime(); // Saves time from accessing volatile variable; can be moved to inside do while if secondsBetweenRefresh can be changed when do while is running
-//        do {
-//          //status.setLastCheckedText("Checking for updates...");
-//          startMS = System.currentTimeMillis();
-//          if (Browser.isPAXWebsiteUpdated()) {
-//            final String link = Browser.parseHRef(Browser.getCurrentButtonLinkLine());
-//            KeyboardHandler.typeLinkNotification(link);
-//            Browser.openLinkInBrowser(link);
-//            Email.sendEmailInBackground("PAX Tickets ON SALE!", "The PAX website has been updated! URL found: " + link);
-//            showTicketsWindow(link);
-////            status.dispose();
-//            Audio.playAlarm();
-//            break;
-//          }
-//          if (Browser.isShowclixUpdated()) {
-//            final String link = Browser.getShowclixLink();
-//            KeyboardHandler.typeLinkNotification(link);
-//            Browser.openLinkInBrowser(link); // Separate Thread because Browser.getShowclixLink() takes a while to do
-//            Email.sendEmailInBackground("PAX Tickets ON SALE!", "The Showclix website has been updated! URL found: " + link);
-//            showTicketsWindow(link);
-////            status.dispose();
-//            Audio.playAlarm();
-//            break;
-//          }
-////          status.setDataUsageText(DataTracker.getDataUsedMB());
-//          while (System.currentTimeMillis() - startMS < (seconds * 1000)) {
-//            if (forceRefresh) {
-//              forceRefresh = false;
-//              break;
-//            }
-//            try {
-//              Thread.sleep(100);
-//            } catch (InterruptedException interruptedException) {
-//            }
-////            status.setLastCheckedText(seconds - (int) ((System.currentTimeMillis() - startMS) / 1000));
-//          }
-//        } while (status.isDisplayable());
-        System.out.println("Finished!");
-      }
-    });
-  }
-
-  /**
    * Prompts the user for the required program information, including username, password, email, and other options. Note that this does NOT start the
    * command-line website checking.
    */
@@ -247,9 +189,7 @@ public class PAXChecker {
   }
 
   public static void parseCommandLineArgs(String[] args) {
-    boolean doUpdate = true;
     boolean autoStart = false;
-    boolean commandLine = false;
     if (args.length > 0) {
       System.out.println("Args!");
       boolean checkPax = true;
@@ -258,10 +198,6 @@ public class PAXChecker {
       for (int a = 0; a < args.length; a++) {
         System.out.println("args[" + a + "] = " + args[a]);
         switch (args[a].toLowerCase()) {
-          case "-noupdate":
-            // Used by the program when starting the new version just downloaded. Can also be used if you don't want updates
-            doUpdate = false;
-            break;
           case "-email":
             Email.setUsername(args[a + 1]);
             System.out.println("Username set to " + Email.getUsername());
@@ -299,9 +235,6 @@ public class PAXChecker {
           case "-autostart":
             autoStart = true;
             break;
-          case "-cli":
-            commandLine = true;
-            break;
           default:
             if (args[a].startsWith("-")) {
               System.out.println("Unknown argument: " + args[a]);
@@ -333,16 +266,6 @@ public class PAXChecker {
   public static int getRefreshTime() {
     return secondsBetweenRefresh;
   }
-
-  /**
-   * Maximizes the Status window.
-   */
-//  public static void maximizeStatusWindow() {
-//    if (status == null) {
-//      return;
-//    }
-//    status.maximizeWindow();
-//  }
 
   /**
    * Creates a new non-daemon Thread with the given Runnable object.
