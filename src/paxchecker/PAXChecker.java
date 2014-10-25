@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.File;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
-import paxchecker.GUI.*;
 
 /**
  *
@@ -18,20 +17,16 @@ public class PAXChecker {
   private static volatile java.awt.Image alertIcon;
   private static final Scanner myScanner = new Scanner(System.in);
   // GUIs
-  protected static Setup setup;
-  protected static Status status;
-  protected static Tickets tickets;
+//  protected static Setup setup;
+//  protected static Status status;
+//  protected static Tickets tickets;
 
   /**
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    loadPatchNotesInBackground();
-    prefetchIconsInBackground();
     System.out.println("Initializing...");
-    javax.swing.ToolTipManager.sharedInstance().setDismissDelay(600000); // Make Tooltips stay forever
     Email.init();
-    KeyboardHandler.init();
     parseCommandLineArgs(args);
   }
 
@@ -42,52 +37,52 @@ public class PAXChecker {
     continueProgram(new Runnable() {
       @Override
       public void run() {
-        setup = null;
+//        setup = null;
         savePrefsInBackground();
         if (!Browser.checkShowclixLink(SettingsHandler.getLastEvent())) {
           SettingsHandler.saveLastEvent(Browser.getShowclixLink());
         }
         //System.gc();
-        status = new Status();
-        setStatusIconInBackground(getIconName(Browser.getExpo()));
+//        status = new Status();
+//        setStatusIconInBackground(getIconName(Browser.getExpo()));
         long startMS;
         int seconds = getRefreshTime(); // Saves time from accessing volatile variable; can be moved to inside do while if secondsBetweenRefresh can be changed when do while is running
-        do {
-          //status.setLastCheckedText("Checking for updates...");
-          startMS = System.currentTimeMillis();
-          if (Browser.isPAXWebsiteUpdated()) {
-            final String link = Browser.parseHRef(Browser.getCurrentButtonLinkLine());
-            KeyboardHandler.typeLinkNotification(link);
-            Browser.openLinkInBrowser(link);
-            Email.sendEmailInBackground("PAX Tickets ON SALE!", "The PAX website has been updated! URL found: " + link);
-            showTicketsWindow(link);
-            status.dispose();
-            Audio.playAlarm();
-            break;
-          }
-          if (Browser.isShowclixUpdated()) {
-            final String link = Browser.getShowclixLink();
-            KeyboardHandler.typeLinkNotification(link);
-            Browser.openLinkInBrowser(link); // Separate Thread because Browser.getShowclixLink() takes a while to do
-            Email.sendEmailInBackground("PAX Tickets ON SALE!", "The Showclix website has been updated! URL found: " + link);
-            showTicketsWindow(link);
-            status.dispose();
-            Audio.playAlarm();
-            break;
-          }
-          status.setDataUsageText(DataTracker.getDataUsedMB());
-          while (System.currentTimeMillis() - startMS < (seconds * 1000)) {
-            if (forceRefresh) {
-              forceRefresh = false;
-              break;
-            }
-            try {
-              Thread.sleep(100);
-            } catch (InterruptedException interruptedException) {
-            }
-            status.setLastCheckedText(seconds - (int) ((System.currentTimeMillis() - startMS) / 1000));
-          }
-        } while (status.isDisplayable());
+//        do {
+//          //status.setLastCheckedText("Checking for updates...");
+//          startMS = System.currentTimeMillis();
+//          if (Browser.isPAXWebsiteUpdated()) {
+//            final String link = Browser.parseHRef(Browser.getCurrentButtonLinkLine());
+//            KeyboardHandler.typeLinkNotification(link);
+//            Browser.openLinkInBrowser(link);
+//            Email.sendEmailInBackground("PAX Tickets ON SALE!", "The PAX website has been updated! URL found: " + link);
+//            showTicketsWindow(link);
+////            status.dispose();
+//            Audio.playAlarm();
+//            break;
+//          }
+//          if (Browser.isShowclixUpdated()) {
+//            final String link = Browser.getShowclixLink();
+//            KeyboardHandler.typeLinkNotification(link);
+//            Browser.openLinkInBrowser(link); // Separate Thread because Browser.getShowclixLink() takes a while to do
+//            Email.sendEmailInBackground("PAX Tickets ON SALE!", "The Showclix website has been updated! URL found: " + link);
+//            showTicketsWindow(link);
+////            status.dispose();
+//            Audio.playAlarm();
+//            break;
+//          }
+////          status.setDataUsageText(DataTracker.getDataUsedMB());
+//          while (System.currentTimeMillis() - startMS < (seconds * 1000)) {
+//            if (forceRefresh) {
+//              forceRefresh = false;
+//              break;
+//            }
+//            try {
+//              Thread.sleep(100);
+//            } catch (InterruptedException interruptedException) {
+//            }
+////            status.setLastCheckedText(seconds - (int) ((System.currentTimeMillis() - startMS) / 1000));
+//          }
+//        } while (status.isDisplayable());
         System.out.println("Finished!");
       }
     });
@@ -203,7 +198,7 @@ public class PAXChecker {
               System.exit(0);
               break;
             case "testtext":
-              sendBackgroundTestEmail();
+//              sendBackgroundTestEmail();
               break;
             case "testalarm":
               Audio.playAlarm();
@@ -363,7 +358,7 @@ public class PAXChecker {
     if (autoStart) {
       startCheckingWebsites();
     } else {
-      setup = new Setup();
+      //setup = new Setup();
     }
   }
 
@@ -379,12 +374,12 @@ public class PAXChecker {
   /**
    * Maximizes the Status window.
    */
-  public static void maximizeStatusWindow() {
-    if (status == null) {
-      return;
-    }
-    status.maximizeWindow();
-  }
+//  public static void maximizeStatusWindow() {
+//    if (status == null) {
+//      return;
+//    }
+//    status.maximizeWindow();
+//  }
 
   /**
    * Creates a new non-daemon Thread with the given Runnable object.
@@ -412,27 +407,27 @@ public class PAXChecker {
   /**
    * Forces the program to check the PAX website for updates. Note that this resets the time since last check to 0.
    */
-  public static void forceRefresh() {
-    forceRefresh = true;
-    if (status != null) {
-      status.setButtonStatusText("Forced website check!");
-    }
-  }
+//  public static void forceRefresh() {
+//    forceRefresh = true;
+//    if (status != null) {
+//      status.setButtonStatusText("Forced website check!");
+//    }
+//  }
 
   /**
    * Creates the Tickets window and makes it visible. This should really only be called once, as subsequent calls will rewrite {@link #tickets} and
    * lose the object reference to the previously opened tickets window.
    */
-  public static void showTicketsWindow() {
-    tickets = new Tickets();
-    try {
-      tickets.setIconImage(alertIcon);
-      tickets.setBackground(Color.RED);
-    } catch (Exception e) {
-      System.out.println("Unable to set IconImage!");
-      e.printStackTrace();
-    }
-  }
+//  public static void showTicketsWindow() {
+//    tickets = new Tickets();
+//    try {
+//      tickets.setIconImage(alertIcon);
+//      tickets.setBackground(Color.RED);
+//    } catch (Exception e) {
+//      System.out.println("Unable to set IconImage!");
+//      e.printStackTrace();
+//    }
+//  }
 
   /**
    * Creates the Tickets window and makes it visible. This should really only be called once, as subsequent calls will rewrite {@link #tickets} and
@@ -440,16 +435,16 @@ public class PAXChecker {
    *
    * @param link The URL that was found by the program
    */
-  public static void showTicketsWindow(String link) {
-    tickets = new Tickets(link);
-    try {
-      tickets.setIconImage(alertIcon);
-      tickets.setBackground(Color.RED);
-    } catch (Exception e) {
-      System.out.println("Unable to set IconImage!");
-      e.printStackTrace();
-    }
-  }
+//  public static void showTicketsWindow(String link) {
+//    tickets = new Tickets(link);
+//    try {
+//      tickets.setIconImage(alertIcon);
+//      tickets.setBackground(Color.RED);
+//    } catch (Exception e) {
+//      System.out.println("Unable to set IconImage!");
+//      e.printStackTrace();
+//    }
+//  }
 
   /**
    * Starts a new instance of the program with the given arguments.
@@ -500,22 +495,6 @@ public class PAXChecker {
   }
 
   /**
-   * Loads the program icons in the background. Note that this starts a new Thread and therefore does not block.
-   */
-  public static void prefetchIconsInBackground() {
-    startBackgroundThread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          alertIcon = javax.imageio.ImageIO.read(PAXChecker.class.getResourceAsStream("/resources/alert.png"));
-        } catch (Exception e) {
-          System.out.println("Unable to fetch PAX Icon!");
-        }
-      }
-    }, "Prefetch Icons");
-  }
-
-  /**
    * Gets the icon name for the given expo.
    *
    * @param expo The name of the expo
@@ -550,36 +529,21 @@ public class PAXChecker {
    *
    * @param iconName The name of the icon to load
    */
-  public static void setStatusIconInBackground(final String iconName) {
-    startBackgroundThread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          if (status != null) {
-            status.setIcon(javax.imageio.ImageIO.read(PAXChecker.class.getResourceAsStream("/resources/" + iconName)));
-          }
-        } catch (Exception e) {
-          System.out.println("Unable to load PAX icon: " + iconName);
-          e.printStackTrace();
-        }
-      }
-    }, "Set Status Icon");
-  }
-
-  /**
-   * Loads the Patch Notes on a new daemon Thread. This also sets the Patch Notes in the Setup window if possible.
-   */
-  public static void loadPatchNotesInBackground() {
-    startBackgroundThread(new Runnable() {
-      @Override
-      public void run() {
-        UpdateHandler.loadVersionNotes();
-        if (UpdateHandler.getVersionNotes() != null && setup != null) {
-          setup.setPatchNotesText(UpdateHandler.getVersionNotes());
-        }
-      }
-    }, "Load Patch Notes");
-  }
+//  public static void setStatusIconInBackground(final String iconName) {
+//    startBackgroundThread(new Runnable() {
+//      @Override
+//      public void run() {
+//        try {
+//          if (status != null) {
+//            status.setIcon(javax.imageio.ImageIO.read(PAXChecker.class.getResourceAsStream("/resources/" + iconName)));
+//          }
+//        } catch (Exception e) {
+//          System.out.println("Unable to load PAX icon: " + iconName);
+//          e.printStackTrace();
+//        }
+//      }
+//    }, "Set Status Icon");
+//  }
 
   /**
    * Saves program Preferences in the background. This uses the currently set values within the program (ex: current username, current password, etc).
@@ -596,36 +560,36 @@ public class PAXChecker {
   /**
    * Sends a test email on a daemon Thread. Note that this also updates the Status window if possible.
    */
-  public static void sendBackgroundTestEmail() {
-    if (status == null) {
-      Email.testEmail();
-      return;
-    }
-    startBackgroundThread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          status.setTextButtonState(false);
-          status.setTextButtonText("Sending...");
-          if (!Email.testEmail()) {
-            status.setTextButtonText("Test Text");
-            status.setTextButtonState(true);
-            return;
-          }
-          long timeStarted = System.currentTimeMillis();
-          while (System.currentTimeMillis() - timeStarted < 60000) {
-            status.setTextButtonText((60 - (int) ((System.currentTimeMillis() - timeStarted) / 1000)) + "");
-            Thread.sleep(200);
-          }
-          status.setTextButtonText("Test Text");
-          status.setTextButtonState(true);
-        } catch (Exception e) {
-          System.out.println("ERROR sending background test email!");
-          e.printStackTrace();
-          status.setTextButtonText("Test Text");
-          status.setTextButtonState(true);
-        }
-      }
-    }, "Send Test Email");
-  }
+//  public static void sendBackgroundTestEmail() {
+//    if (status == null) {
+//      Email.testEmail();
+//      return;
+//    }
+//    startBackgroundThread(new Runnable() {
+//      @Override
+//      public void run() {
+//        try {
+//          status.setTextButtonState(false);
+//          status.setTextButtonText("Sending...");
+//          if (!Email.testEmail()) {
+//            status.setTextButtonText("Test Text");
+//            status.setTextButtonState(true);
+//            return;
+//          }
+//          long timeStarted = System.currentTimeMillis();
+//          while (System.currentTimeMillis() - timeStarted < 60000) {
+//            status.setTextButtonText((60 - (int) ((System.currentTimeMillis() - timeStarted) / 1000)) + "");
+//            Thread.sleep(200);
+//          }
+//          status.setTextButtonText("Test Text");
+//          status.setTextButtonState(true);
+//        } catch (Exception e) {
+//          System.out.println("ERROR sending background test email!");
+//          e.printStackTrace();
+//          status.setTextButtonText("Test Text");
+//          status.setTextButtonState(true);
+//        }
+//      }
+//    }, "Send Test Email");
+//  }
 }

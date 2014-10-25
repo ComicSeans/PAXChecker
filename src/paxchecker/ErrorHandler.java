@@ -1,7 +1,5 @@
 package paxchecker;
 
-import paxchecker.GUI.ErrorWindow;
-
 /**
  *
  * @author SunnyBat
@@ -9,7 +7,6 @@ import paxchecker.GUI.ErrorWindow;
 public class ErrorHandler {
 
   private static byte errorWindowCount = 0;
-  private static ErrorWindow errorWindow;
   private static boolean fatalError;
   private static boolean commandLine;
 
@@ -65,16 +62,16 @@ public class ErrorHandler {
       System.out.println("Stopped showing error windows -- too many!");
       return;
     }
-    errorWindow = new ErrorWindow();
-    errorWindow.setTitle(windowTitle);
-    errorWindow.JLTitle.setText(title);
-    errorWindow.JTAError.setText(message);
-    errorWindow.setVisible(true);
-    if (t != null) {
-      errorWindow.JBError.setEnabled(true);
-      errorWindow.myError = t;
-      t.printStackTrace();
-    }
+//    errorWindow = new ErrorWindow();
+//    errorWindow.setTitle(windowTitle);
+//    errorWindow.JLTitle.setText(title);
+//    errorWindow.JTAError.setText(message);
+//    errorWindow.setVisible(true);
+//    if (t != null) {
+//      errorWindow.JBError.setEnabled(true);
+//      errorWindow.myError = t;
+//      t.printStackTrace();
+//    }
     errorWindowCount++;
   }
 
@@ -89,20 +86,20 @@ public class ErrorHandler {
       t.printStackTrace();
       return;
     }
-    errorWindow = new ErrorWindow();
-    errorWindow.setTitle("Error Information");
-    errorWindow.JLTitle.setText("StackTrace Information:");
-    errorWindow.JTAError.setLineWrap(false);
-    String message = t.toString() + "\n";
-    StackTraceElement[] eE = t.getStackTrace();
-    for (int a = 0; a < eE.length; a++) {
-      message += "at ";
-      message += eE[a];
-      message += "\n";
-    }
-    errorWindow.JTAError.setText(message);
-    errorWindow.JTAError.setCaretPosition(0);
-    errorWindow.setVisible(true);
+//    errorWindow = new ErrorWindow();
+//    errorWindow.setTitle("Error Information");
+//    errorWindow.JLTitle.setText("StackTrace Information:");
+//    errorWindow.JTAError.setLineWrap(false);
+//    String message = t.toString() + "\n";
+//    StackTraceElement[] eE = t.getStackTrace();
+//    for (int a = 0; a < eE.length; a++) {
+//      message += "at ";
+//      message += eE[a];
+//      message += "\n";
+//    }
+//    errorWindow.JTAError.setText(message);
+//    errorWindow.JTAError.setCaretPosition(0);
+//    errorWindow.setVisible(true);
     errorWindowCount++;
     System.out.println(t.getMessage());
     t.printStackTrace();
@@ -122,18 +119,18 @@ public class ErrorHandler {
 
   public static void fatalError() {
     fatalError = true;
-    if (PAXChecker.setup != null) {
-      PAXChecker.setup.dispose();
-    }
-    if (PAXChecker.tickets != null) {
-      PAXChecker.tickets.dispose();
-    }
-    if (PAXChecker.status != null) {
-      PAXChecker.status.dispose();
-    }
-    if (UpdateHandler.update != null) {
-      UpdateHandler.update.dispose();
-    }
+//    if (PAXChecker.setup != null) {
+//      PAXChecker.setup.dispose();
+//    }
+//    if (PAXChecker.tickets != null) {
+//      PAXChecker.tickets.dispose();
+//    }
+//    if (PAXChecker.status != null) {
+//      PAXChecker.status.dispose();
+//    }
+//    if (UpdateHandler.update != null) {
+//      UpdateHandler.update.dispose();
+//    }
   }
 
   private static boolean canExit() {
@@ -142,37 +139,37 @@ public class ErrorHandler {
         return true;
       }
       int validCount = 0;
-      if (PAXChecker.setup != null) {
-        if (!PAXChecker.setup.isVisible()) {
-          validCount++;
-        }
-      } else {
-        validCount++;
-      }
-      if (PAXChecker.tickets != null) {
-        if (!PAXChecker.tickets.isVisible()) {
-          validCount++;
-        }
-      } else {
-        validCount++;
-      }
-      if (UpdateHandler.update != null) {
-        if (!UpdateHandler.update.isVisible()) {
-          validCount++;
-        }
-      } else {
-        validCount++;
-      }
-      if (PAXChecker.status != null) {
-        if (!PAXChecker.status.isDisplayable()) {
-          validCount++;
-        }
-      } else {
-        validCount++;
-      }
-      if (validCount == 4) {
-        return true;
-      }
+//      if (PAXChecker.setup != null) {
+//        if (!PAXChecker.setup.isVisible()) {
+//          validCount++;
+//        }
+//      } else {
+//        validCount++;
+//      }
+//      if (PAXChecker.tickets != null) {
+//        if (!PAXChecker.tickets.isVisible()) {
+//          validCount++;
+//        }
+//      } else {
+//        validCount++;
+//      }
+//      if (UpdateHandler.update != null) {
+//        if (!UpdateHandler.update.isVisible()) {
+//          validCount++;
+//        }
+//      } else {
+//        validCount++;
+//      }
+//      if (PAXChecker.status != null) {
+//        if (!PAXChecker.status.isDisplayable()) {
+//          validCount++;
+//        }
+//      } else {
+//        validCount++;
+//      }
+//      if (validCount == 4) {
+//        return true;
+//      }
     }
     return false;
   }

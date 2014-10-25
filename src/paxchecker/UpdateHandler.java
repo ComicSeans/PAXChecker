@@ -23,7 +23,7 @@ public class UpdateHandler {
   private static final String UPDATE_LINK = "https://dl.dropboxusercontent.com/u/16152108/PAXChecker.jar";
   private static final String BETA_UPDATE_LINK = "https://dl.dropboxusercontent.com/u/16152108/PAXCheckerBETA.jar";
   private static final String PATCH_NOTES_LINK = "https://dl.dropboxusercontent.com/u/16152108/PAXCheckerUpdates.txt";
-  public static paxchecker.GUI.Update update;
+//  public static paxchecker.GUI.Update update;
 
   /**
    * Returns the current Version Notes found. This returns all of the notes after the supplied version (useful for things like patch notes when
@@ -112,9 +112,9 @@ public class UpdateHandler {
         }
       }
       versionNotes = allText.trim();
-      if (update != null) {
-        update.setYesButtonText(getUpdateLevel());
-      }
+//      if (update != null) {
+//        update.setYesButtonText(getUpdateLevel());
+//      }
     } catch (Exception e) {
       System.out.println("Unable to load version notes!");
       e.printStackTrace();
@@ -159,17 +159,17 @@ public class UpdateHandler {
       System.out.println("Checking for updates...");
       if (UpdateHandler.updateAvailable()) {
         CountDownLatch cdl = new CountDownLatch(1);
-        update = new paxchecker.GUI.Update(cdl);
+//        update = new paxchecker.GUI.Update(cdl);
         try {
           cdl.await();
         } catch (InterruptedException iE) {
           System.out.println("CDL interrupted, continuing...");
         }
         if (UpdateHandler.shouldUpdateProgram()) {
-          update.setStatusLabelText("Downloading update...");
+//          update.setStatusLabelText("Downloading update...");
           UpdateHandler.updateProgram();
           PAXChecker.startNewProgramInstance(args);
-          update.dispose();
+//          update.dispose();
           System.exit(0);
         }
       }
@@ -221,9 +221,9 @@ public class UpdateHandler {
   public static void setUpdateLevel(int level) {
     if (updateLevel < level) {
       updateLevel = level;
-      if (update != null) {
-        update.setYesButtonText(updateLevel);
-      }
+//      if (update != null) {
+//        update.setYesButtonText(updateLevel);
+//      }
     }
   }
 
@@ -308,19 +308,19 @@ public class UpdateHandler {
       while ((bytesRead = inputStream.read(buffer)) != -1) {
         in += bytesRead;
         buffOutputStream.write(buffer, 0, bytesRead);
-        if (update != null) {
-          if ((int) (((in * 100) / remoteFileSize)) != prevPercent) {
-            prevPercent = (int) (((in * 100) / remoteFileSize));
-            update.updateProgress(prevPercent);
-          }
-        }
+//        if (update != null) {
+//          if ((int) (((in * 100) / remoteFileSize)) != prevPercent) {
+//            prevPercent = (int) (((in * 100) / remoteFileSize));
+//            update.updateProgress(prevPercent);
+//          }
+//        }
       }
       buffOutputStream.flush();
       buffOutputStream.close();
       inputStream.close();
-      if (update != null) {
-        update.setStatusLabelText("Finishing up...");
-      }
+//      if (update != null) {
+//        update.setStatusLabelText("Finishing up...");
+//      }
       try { // Code to make a copy of the current JAR file
         File inputFile = new File(path.substring(0, path.lastIndexOf(".jar")) + ".temp.jar");
         InputStream fIn = new BufferedInputStream(new FileInputStream(inputFile));

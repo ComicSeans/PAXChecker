@@ -75,39 +75,41 @@ public class Browser {
     if (!isCheckingPaxWebsite()) {
       return false;
     }
-    String lineText = getCurrentButtonLinkLine();
-    if (lineText == null) {
-      if (PAXChecker.status != null) {
-        PAXChecker.status.setWebsiteLink("ERROR connecting to the PAX website!");
-      } else {
-        System.out.println("ERROR connecting to the PAX website!");
-      }
+//    String lineText = getCurrentButtonLinkLine();
+//    if (lineText == null)
+//    {
+//      if (PAXChecker.status != null) {
+//        PAXChecker.status.setWebsiteLink("ERROR connecting to the PAX website!");
+//      }
+//      else {
+//        System.out.println("ERROR connecting to the PAX website!");
+//      }
+//      return false;
+//    } else if (lineText.equals("IOException") || lineText.equals("NoConnection")) {
+//      if (PAXChecker.status != null) {
+//        PAXChecker.status.setWebsiteLink("Unable to connect: " + lineText);
+//      } else {
+//        System.out.println("Unable to connect: " + lineText);
+//      }
+//      return false;
+//    } else if (lineText.equals("NoFind")) {
+//      if (PAXChecker.status != null) {
+//        PAXChecker.status.setWebsiteLink("Unable to find the Register Online button!");
+//      } else {
+//        System.out.println("Unable to find the Register Online button!");
+//      }
+//      return false;
+//    } else if (!lineText.contains("\"" + websiteLink + "\"")) {
+//      System.out.println("OMG IT'S UPDATED: " + lineText);
+//      return true;
+//    } else {
+//      if (PAXChecker.status != null) {
+//        PAXChecker.status.setWebsiteLink(parseHRef(lineText));
+//      } else {
+//        System.out.println("");
+//      }
       return false;
-    } else if (lineText.equals("IOException") || lineText.equals("NoConnection")) {
-      if (PAXChecker.status != null) {
-        PAXChecker.status.setWebsiteLink("Unable to connect: " + lineText);
-      } else {
-        System.out.println("Unable to connect: " + lineText);
-      }
-      return false;
-    } else if (lineText.equals("NoFind")) {
-      if (PAXChecker.status != null) {
-        PAXChecker.status.setWebsiteLink("Unable to find the Register Online button!");
-      } else {
-        System.out.println("Unable to find the Register Online button!");
-      }
-      return false;
-    } else if (!lineText.contains("\"" + websiteLink + "\"")) {
-      System.out.println("OMG IT'S UPDATED: " + lineText);
-      return true;
-    } else {
-      if (PAXChecker.status != null) {
-        PAXChecker.status.setWebsiteLink(parseHRef(lineText));
-      } else {
-        System.out.println("");
-      }
-      return false;
-    }
+//    }
   }
 
   /**
@@ -266,15 +268,15 @@ public class Browser {
     }
     int currEvent = getLatestShowclixID(getExpo());
     if (currEvent == -1) {
-      if (PAXChecker.status != null) {
-        PAXChecker.status.setShowclixLink("Unable to to connect to the Showclix website!");
-      }
+//      if (PAXChecker.status != null) {
+//        PAXChecker.status.setShowclixLink("Unable to to connect to the Showclix website!");
+//      }
       return false;
     }
     String eventUrl = "https://showclix.com/event/" + currEvent;
-    if (PAXChecker.status != null) {
-      PAXChecker.status.setShowclixLink(eventUrl);
-    }
+//    if (PAXChecker.status != null) {
+//      PAXChecker.status.setShowclixLink(eventUrl);
+//    }
     return currEvent != lastShowclixEventID;
   }
 
