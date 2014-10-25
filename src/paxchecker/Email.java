@@ -278,16 +278,12 @@ public class Email {
    * Sends a test email to every number put into the program and prints whether it was successful or not to the Status window.
    */
   public static boolean testEmail() {
-//    if (sendMessage("Test", "The test is successful. The PAX Checker is now set up to text your phone when the website updates!")) {
-//      if (PAXChecker.status != null) {
-//        PAXChecker.status.setButtonStatusText("Text message successfully sent!");
-//        return true;
-//      }
-//    } else {
-//      if (PAXChecker.status != null) {
-//        PAXChecker.status.setButtonStatusText("There was an error sending your text message.");
-//      }
-//    }
+    if (sendMessage("Test", "The test is successful. The PAX Checker is now set up to text your phone when the website updates!")) {
+        System.out.println("Text message successfully sent!");
+        return true;
+    } else {
+        System.out.println("There was an error sending your text message.");
+    }
     return false;
   }
 

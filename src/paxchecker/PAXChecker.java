@@ -11,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class PAXChecker {
 
-  public static final String VERSION = "1.7.2.2";
+  public static final String VERSION = "0.0.1";
   private static volatile int secondsBetweenRefresh = 10;
   private static volatile boolean forceRefresh;
   private static final Scanner myScanner = new Scanner(System.in);
@@ -24,6 +24,8 @@ public class PAXChecker {
     System.out.println("Initializing...");
     Email.init();
     parseCommandLineArgs(args);
+    commandLineSettingsInput();
+  	startCommandLineWebsiteChecking();
   }
 
   /**
@@ -84,20 +86,25 @@ public class PAXChecker {
           case "prime":
           case "paxprime":
             Browser.setExpo("PAX Prime");
+            break;
           case "east":
           case "paxeast":
             Browser.setExpo("PAX East");
+            break;
           case "south":
           case "paxsouth":
             Browser.setExpo("PAX South");
+            break;
           case "aus":
           case "australia":
           case "paxaus":
           case "paxaustralia":
             Browser.setExpo("PAX Aus");
+            break;
           default:
             System.out.println("Invalid expo! Setting to Prime...");
             Browser.setExpo("PAX Prime");
+            break;
         }
         System.out.println();
       } catch (Exception e) {
@@ -126,7 +133,7 @@ public class PAXChecker {
               System.exit(0);
               break;
             case "testtext":
-//              sendBackgroundTestEmail();
+              sendBackgroundTestEmail();
               break;
             case "refresh":
             	break;
@@ -151,9 +158,11 @@ public class PAXChecker {
       public void run() {
         //System.gc();
         long startMS;
-        int seconds = getRefreshTime(); // Saves time from accessing volatile variable; can be moved to inside do while if secondsBetweenRefresh can be changed when do while is running
+        int seconds = getRefreshTime();
+        // Saves time from accessing volatile variable; can be moved to inside do while
+        //if secondsBetweenRefresh can be changed when do while is running
+        
         do {
-          //status.setLastCheckedText("Checking for updates...");
           startMS = System.currentTimeMillis();
           if (Browser.isPAXWebsiteUpdated()) {
             final String link = Browser.parseHRef(Browser.getCurrentButtonLinkLine());
@@ -167,7 +176,7 @@ public class PAXChecker {
             final String link = Browser.getShowclixLink();
             System.out.println("LINK FOUND: " + link);
             Email.sendEmailInBackground("PAX Tickets ON SALE!", "The Showclix website has been updated! URL found: " + link);
-            Browser.openLinkInBrowser(link);
+//            Browser.openLinkInBrowser(link);
 //            Audio.playAlarm();
             break;
           }
@@ -291,73 +300,6 @@ public class PAXChecker {
   }
 
   /**
-   * Forces the program to check the PAX website for updates. Note that this resets the time since last check to 0.
-   */
-//  public static void forceRefresh() {
-//    forceRefresh = true;
-//    if (status != null) {
-//      status.setButtonStatusText("Forced website check!");
-//    }
-//  }
-
-  /**
-   * Creates the Tickets window and makes it visible. This should really only be called once, as subsequent calls will rewrite {@link #tickets} and
-   * lose the object reference to the previously opened tickets window.
-   */
-//  public static void showTicketsWindow() {
-//    tickets = new Tickets();
-//    try {
-//      tickets.setIconImage(alertIcon);
-//      tickets.setBackground(Color.RED);
-//    } catch (Exception e) {
-//      System.out.println("Unable to set IconImage!");
-//      e.printStackTrace();
-//    }
-//  }
-
-  /**
-   * Creates the Tickets window and makes it visible. This should really only be called once, as subsequent calls will rewrite {@link #tickets} and
-   * lose the object reference to the previously opened tickets window.
-   *
-   * @param link The URL that was found by the program
-   */
-//  public static void showTicketsWindow(String link) {
-//    tickets = new Tickets(link);
-//    try {
-//      tickets.setIconImage(alertIcon);
-//      tickets.setBackground(Color.RED);
-//    } catch (Exception e) {
-//      System.out.println("Unable to set IconImage!");
-//      e.printStackTrace();
-//    }
-//  }
-
-  /**
-   * Starts a new instance of the program with the given arguments.
-   *
-   * @param args
-   */
-  public static void startNewProgramInstance(String... args) {
-    try {
-      String[] nArgs;
-      String path = PAXChecker.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-      if (args != null && args.length > 0) {
-        nArgs = new String[args.length + 3];
-        System.arraycopy(args, 0, nArgs, 3, args.length);
-      } else {
-        nArgs = new String[3];
-      }
-      nArgs[0] = System.getProperty("java.home") + "\\bin\\javaw.exe";
-      nArgs[1] = "-jar";
-      nArgs[2] = new File(path).getAbsolutePath(); // path can have leading / on it, getAbsolutePath() removes them
-      ProcessBuilder pb = new ProcessBuilder(nArgs);
-      pb.start();
-    } catch (Exception e) {
-      ErrorHandler.printError("Small Error", "Unable to automatically run update.", null);
-    }
-  }
-
-  /**
    * This makes a new daemon, low-priority Thread and runs it.
    *
    * @param run The Runnable to make into a Thread and run
@@ -381,57 +323,6 @@ public class PAXChecker {
   }
 
   /**
-   * Gets the icon name for the given expo.
-   *
-   * @param expo The name of the expo
-   * @return The name of the icon for the given expo
-   */
-  public static String getIconName(String expo) {
-    switch (expo.toLowerCase()) { // toLowerCase to lower the possibilities (and readability)
-      case "prime":
-      case "pax prime":
-        return "PAXPrime.png";
-      case "east":
-      case "pax east":
-        return "PAXEast.png";
-      case "south":
-      case "pax south":
-        return "PAXSouth.png";
-      case "aus":
-      case "pax aus":
-        return "PAXAus.png";
-      case "dev":
-      case "pax dev":
-        return "PAXDev.png";
-      default:
-        System.out.println("getIconName(): Unknown PAX expo: " + expo);
-        return "PAXPrime.png";
-    }
-  }
-
-  /**
-   * Sets the icon of the Status window. Note that this checks the /resources/ folder located in the JAR file for the filename, regardless of what the
-   * iconName is.
-   *
-   * @param iconName The name of the icon to load
-   */
-//  public static void setStatusIconInBackground(final String iconName) {
-//    startBackgroundThread(new Runnable() {
-//      @Override
-//      public void run() {
-//        try {
-//          if (status != null) {
-//            status.setIcon(javax.imageio.ImageIO.read(PAXChecker.class.getResourceAsStream("/resources/" + iconName)));
-//          }
-//        } catch (Exception e) {
-//          System.out.println("Unable to load PAX icon: " + iconName);
-//          e.printStackTrace();
-//        }
-//      }
-//    }, "Set Status Icon");
-//  }
-
-  /**
    * Saves program Preferences in the background. This uses the currently set values within the program (ex: current username, current password, etc).
    */
   public static void savePrefsInBackground() {
@@ -446,36 +337,7 @@ public class PAXChecker {
   /**
    * Sends a test email on a daemon Thread. Note that this also updates the Status window if possible.
    */
-//  public static void sendBackgroundTestEmail() {
-//    if (status == null) {
-//      Email.testEmail();
-//      return;
-//    }
-//    startBackgroundThread(new Runnable() {
-//      @Override
-//      public void run() {
-//        try {
-//          status.setTextButtonState(false);
-//          status.setTextButtonText("Sending...");
-//          if (!Email.testEmail()) {
-//            status.setTextButtonText("Test Text");
-//            status.setTextButtonState(true);
-//            return;
-//          }
-//          long timeStarted = System.currentTimeMillis();
-//          while (System.currentTimeMillis() - timeStarted < 60000) {
-//            status.setTextButtonText((60 - (int) ((System.currentTimeMillis() - timeStarted) / 1000)) + "");
-//            Thread.sleep(200);
-//          }
-//          status.setTextButtonText("Test Text");
-//          status.setTextButtonState(true);
-//        } catch (Exception e) {
-//          System.out.println("ERROR sending background test email!");
-//          e.printStackTrace();
-//          status.setTextButtonText("Test Text");
-//          status.setTextButtonState(true);
-//        }
-//      }
-//    }, "Send Test Email");
-//  }
+  public static void sendBackgroundTestEmail() {
+	  Email.testEmail();
+  }
 }
