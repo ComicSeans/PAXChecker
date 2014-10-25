@@ -125,7 +125,7 @@ public class PAXChecker {
             input = myScanner.next();
           } catch (Exception e) {
             //e.printStackTrace();
-            System.out.println("Error parsing input -- please try again.");
+            //System.out.println("Error parsing input -- please try again.");
             continue;
           }
           switch (input.toLowerCase()) {
@@ -145,7 +145,6 @@ public class PAXChecker {
               System.out.println("Commands:");
               System.out.println("exit        - Exit the program");
               System.out.println("testtext    - Send a test text");
-              System.out.println("testalarm   - Play the alarm (if enabled)");
               System.out.println("refresh     - Force check");
               System.out.println("check       - Force check");
               System.out.println("Commands are NOT case sensitive.");
