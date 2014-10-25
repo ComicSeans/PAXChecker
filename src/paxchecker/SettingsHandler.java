@@ -43,7 +43,7 @@ public class SettingsHandler {
    * Preferences will likely be incorrect.
    */
   public static void saveAllPrefs() {
-    saveAllPrefs(PAXChecker.getRefreshTime(), Browser.isCheckingPaxWebsite(), Browser.isCheckingShowclix(), Audio.soundEnabled(), Browser.getExpo(), UpdateHandler.getUseBeta());
+    saveAllPrefs(PAXChecker.getRefreshTime(), Browser.isCheckingPaxWebsite(), Browser.isCheckingShowclix(), Browser.getExpo(), UpdateHandler.getUseBeta());
   }
 
   /**
@@ -57,7 +57,7 @@ public class SettingsHandler {
    * @param expo The Expo being checked for. Note it should be in "PAX XXXX" format.
    * @param useBeta True to use BETA versions, false to not
    */
-  public static void saveAllPrefs(int refreshTime, boolean checkPax, boolean checkShowclix, boolean playAlarm, String expo, boolean useBeta) {
+  public static void saveAllPrefs(int refreshTime, boolean checkPax, boolean checkShowclix, String expo, boolean useBeta) {
     try {
       myPrefs.sync();
     } catch (BackingStoreException bSE) {
@@ -69,12 +69,11 @@ public class SettingsHandler {
       saveRefreshTime(refreshTime);
       saveCheckPax(checkPax);
       saveCheckShowclix(checkShowclix);
-      savePlayAlarm(playAlarm);
       saveEvent(expo == null ? "" : expo);
       saveCellNum();
       saveEmail();
       saveUseBeta(useBeta);
-      System.out.println("Pax = " + checkPax + ", Showclix = " + checkShowclix + ", playAlarm = " + playAlarm + ", Expo = " + expo);
+      System.out.println("Pax = " + checkPax + ", Showclix = " + checkShowclix + ", Expo = " + expo);
       myPrefs.flush();
     } catch (BackingStoreException bSE) {
       System.out.println("Unable to save settings!");

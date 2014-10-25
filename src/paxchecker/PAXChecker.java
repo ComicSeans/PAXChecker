@@ -138,16 +138,6 @@ public class PAXChecker {
       } catch (Exception e) {
       }
     }
-    if (!Browser.isCheckingPaxWebsite()) {
-      System.out.print("Play Alarm (Y/N): ");
-      try {
-        if (!myScanner.next().toLowerCase().startsWith("n")) {
-          Audio.setPlayAlarm(true);
-        }
-        System.out.println();
-      } catch (Exception e) {
-      }
-    }
     if (Browser.getExpo() == null) {
       System.out.print("Expo: ");
       try {
@@ -200,10 +190,8 @@ public class PAXChecker {
             case "testtext":
 //              sendBackgroundTestEmail();
               break;
-            case "testalarm":
-              Audio.playAlarm();
-              break;
             case "refresh":
+            	break;
             case "check":
               forceRefresh = true;
               break;
@@ -234,7 +222,7 @@ public class PAXChecker {
             System.out.println("LINK FOUND: " + link);
             Email.sendEmailInBackground("PAX Tickets ON SALE!", "The PAX website has been updated! URL found: " + link);
             Browser.openLinkInBrowser(link);
-            Audio.playAlarm();
+//            Audio.playAlarm();
             break;
           }
           if (Browser.isShowclixUpdated()) {
@@ -242,7 +230,7 @@ public class PAXChecker {
             System.out.println("LINK FOUND: " + link);
             Email.sendEmailInBackground("PAX Tickets ON SALE!", "The Showclix website has been updated! URL found: " + link);
             Browser.openLinkInBrowser(link);
-            Audio.playAlarm();
+//            Audio.playAlarm();
             break;
           }
           System.out.println("Data used: " + DataTracker.getDataUsedMB() + "MB");
@@ -310,10 +298,6 @@ public class PAXChecker {
           case "-noshowclix":
             System.out.println("Setting check Showclix website to false");
             checkShowclix = false;
-            break;
-          case "-alarm":
-            System.out.println("Alarm activated");
-            Audio.setPlayAlarm(true);
             break;
           case "-delay":
             setRefreshTime(Integer.getInteger(args[a + 1], 15));
