@@ -14,12 +14,8 @@ public class PAXChecker {
   public static final String VERSION = "1.7.2.2";
   private static volatile int secondsBetweenRefresh = 10;
   private static volatile boolean forceRefresh;
-  private static volatile java.awt.Image alertIcon;
   private static final Scanner myScanner = new Scanner(System.in);
-  // GUIs
-//  protected static Setup setup;
-//  protected static Status status;
-//  protected static Tickets tickets;
+
 
   /**
    * @param args the command line arguments
@@ -266,9 +262,6 @@ public class PAXChecker {
             // Used by the program when starting the new version just downloaded. Can also be used if you don't want updates
             doUpdate = false;
             break;
-          case "-typelink":
-            KeyboardHandler.setTypeLink(true);
-            break;
           case "-email":
             Email.setUsername(args[a + 1]);
             System.out.println("Username set to " + Email.getUsername());
@@ -327,23 +320,9 @@ public class PAXChecker {
         System.exit(0);
       }
     }
-    if (commandLine) {
-      ErrorHandler.setCommandLine(true);
-      if (doUpdate) {
-        UpdateHandler.autoUpdate(args);
-      }
-      commandLineSettingsInput();
-      startCommandLineWebsiteChecking();
-      return;
-    }
-    if (doUpdate) {
-      UpdateHandler.checkUpdate(args);
-    }
-    if (autoStart) {
-      startCheckingWebsites();
-    } else {
-      //setup = new Setup();
-    }
+    commandLineSettingsInput();
+  	startCommandLineWebsiteChecking();
+
   }
 
   /**
@@ -451,7 +430,7 @@ public class PAXChecker {
       ProcessBuilder pb = new ProcessBuilder(nArgs);
       pb.start();
     } catch (Exception e) {
-      ErrorHandler.showErrorWindow("Small Error", "Unable to automatically run update.", null);
+      ErrorHandler.printError("Small Error", "Unable to automatically run update.", null);
     }
   }
 

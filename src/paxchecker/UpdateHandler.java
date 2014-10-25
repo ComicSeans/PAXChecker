@@ -154,51 +154,51 @@ public class UpdateHandler {
    *
    * @param args The command-line arguments to use when starting a new program instance
    */
-  public static void checkUpdate(String[] args) {
-    try {
-      System.out.println("Checking for updates...");
-      if (UpdateHandler.updateAvailable()) {
-        CountDownLatch cdl = new CountDownLatch(1);
-//        update = new paxchecker.GUI.Update(cdl);
-        try {
-          cdl.await();
-        } catch (InterruptedException iE) {
-          System.out.println("CDL interrupted, continuing...");
-        }
-        if (UpdateHandler.shouldUpdateProgram()) {
-//          update.setStatusLabelText("Downloading update...");
-          UpdateHandler.updateProgram();
-          PAXChecker.startNewProgramInstance(args);
-//          update.dispose();
-          System.exit(0);
-        }
-      }
-    } catch (Exception e) {
-      ErrorHandler.showErrorWindow("ERROR", "An error has occurred while attempting to update the program. If the problem persists, please manually download the latest version.", e);
-      ErrorHandler.fatalError();
-    }
-  }
+//  public static void checkUpdate(String[] args) {
+//    try {
+//      System.out.println("Checking for updates...");
+//      if (UpdateHandler.updateAvailable()) {
+//        CountDownLatch cdl = new CountDownLatch(1);
+////        update = new paxchecker.GUI.Update(cdl);
+//        try {
+//          cdl.await();
+//        } catch (InterruptedException iE) {
+//          System.out.println("CDL interrupted, continuing...");
+//        }
+//        if (UpdateHandler.shouldUpdateProgram()) {
+////          update.setStatusLabelText("Downloading update...");
+//          UpdateHandler.updateProgram();
+//          PAXChecker.startNewProgramInstance(args);
+////          update.dispose();
+//          System.exit(0);
+//        }
+//      }
+//    } catch (Exception e) {
+//      ErrorHandler.printError("ERROR", "An error has occurred while attempting to update the program. If the problem persists, please manually download the latest version.", e);
+//      ErrorHandler.fatalError();
+//    }
+//  }
 
   /**
    * Checks for program updates and automatically updates if found.
    *
    * @param args The command-line arguments to use when starting a new program instance
    */
-  public static void autoUpdate(String[] args) {
-    try {
-      System.out.println("Checking for updates...");
-      if (UpdateHandler.updateAvailable()) {
-        System.out.println("Update found, downloading update...");
-        UpdateHandler.updateProgram();
-        System.out.println("Update finished, restarting program...");
-        PAXChecker.startNewProgramInstance(args);
-        System.exit(0);
-      }
-    } catch (Exception e) {
-      ErrorHandler.showErrorWindow("ERROR", "An error has occurred while attempting to update the program. If the problem persists, please manually download the latest version.", e);
-      ErrorHandler.fatalError();
-    }
-  }
+//  public static void autoUpdate(String[] args) {
+//    try {
+//      System.out.println("Checking for updates...");
+//      if (UpdateHandler.updateAvailable()) {
+//        System.out.println("Update found, downloading update...");
+//        UpdateHandler.updateProgram();
+//        System.out.println("Update finished, restarting program...");
+//        PAXChecker.startNewProgramInstance(args);
+//        System.exit(0);
+//      }
+//    } catch (Exception e) {
+//      ErrorHandler.printError("ERROR", "An error has occurred while attempting to update the program. If the problem persists, please manually download the latest version.", e);
+//      ErrorHandler.fatalError();
+//    }
+//  }
 
   /**
    * Returns the size of the update file found online. This will return 0 if the size has not been loaded yet.
@@ -275,7 +275,7 @@ public class UpdateHandler {
         return false;
       }
       if (updateSize == -1) {
-        ErrorHandler.showErrorWindow("ERROR checking for updates!", "Update size listed as -1 -- Program most likely unable to connect!", null);
+        ErrorHandler.printError("ERROR checking for updates!", "Update size listed as -1 -- Program most likely unable to connect!", null);
         return false;
       } else if (updateSize != fileSize) {
         System.out.println("Update available!");
@@ -283,7 +283,7 @@ public class UpdateHandler {
       }
     } catch (Exception e) {
       System.out.println("ERROR updating program!");
-      ErrorHandler.showErrorWindow("ERROR updating program!", "The program was unable to check for new updates.", e);
+      ErrorHandler.printError("ERROR updating program!", "The program was unable to check for new updates.", e);
     }
     return false;
   }
@@ -292,60 +292,60 @@ public class UpdateHandler {
    * Downloads the latest JAR file from the Dropbox server. Note that this automatically closes the program once finished. Also note that once this is
    * run, the program WILL eventually close, either through finishing the update or failing to properly update.
    */
-  public static void updateProgram() {
-    try {
-      URL updateURL = new URL(UPDATE_LINK);
-      URLConnection conn = updateURL.openConnection();
-      InputStream inputStream = conn.getInputStream();
-      long remoteFileSize = conn.getContentLength();
-      System.out.println("Downloding file...\nUpdate Size(compressed): " + remoteFileSize + " Bytes");
-      String path = PAXChecker.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-      BufferedOutputStream buffOutputStream = new BufferedOutputStream(new FileOutputStream(new File(path.substring(0, path.lastIndexOf(".jar")) + ".temp.jar")));
-      byte[] buffer = new byte[32 * 1024];
-      int bytesRead;
-      int in = 0;
-      int prevPercent = 0;
-      while ((bytesRead = inputStream.read(buffer)) != -1) {
-        in += bytesRead;
-        buffOutputStream.write(buffer, 0, bytesRead);
-//        if (update != null) {
-//          if ((int) (((in * 100) / remoteFileSize)) != prevPercent) {
-//            prevPercent = (int) (((in * 100) / remoteFileSize));
-//            update.updateProgress(prevPercent);
-//          }
-//        }
-      }
-      buffOutputStream.flush();
-      buffOutputStream.close();
-      inputStream.close();
-//      if (update != null) {
-//        update.setStatusLabelText("Finishing up...");
+//  public static void updateProgram() {
+//    try {
+//      URL updateURL = new URL(UPDATE_LINK);
+//      URLConnection conn = updateURL.openConnection();
+//      InputStream inputStream = conn.getInputStream();
+//      long remoteFileSize = conn.getContentLength();
+//      System.out.println("Downloding file...\nUpdate Size(compressed): " + remoteFileSize + " Bytes");
+//      String path = PAXChecker.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+//      BufferedOutputStream buffOutputStream = new BufferedOutputStream(new FileOutputStream(new File(path.substring(0, path.lastIndexOf(".jar")) + ".temp.jar")));
+//      byte[] buffer = new byte[32 * 1024];
+//      int bytesRead;
+//      int in = 0;
+//      int prevPercent = 0;
+//      while ((bytesRead = inputStream.read(buffer)) != -1) {
+//        in += bytesRead;
+//        buffOutputStream.write(buffer, 0, bytesRead);
+////        if (update != null) {
+////          if ((int) (((in * 100) / remoteFileSize)) != prevPercent) {
+////            prevPercent = (int) (((in * 100) / remoteFileSize));
+////            update.updateProgress(prevPercent);
+////          }
+////        }
 //      }
-      try { // Code to make a copy of the current JAR file
-        File inputFile = new File(path.substring(0, path.lastIndexOf(".jar")) + ".temp.jar");
-        InputStream fIn = new BufferedInputStream(new FileInputStream(inputFile));
-        File outputFile = new File(path);
-        buffOutputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
-        buffer = new byte[32 * 1024];
-        in = 0;
-        while ((bytesRead = fIn.read(buffer)) != -1) {
-          in += bytesRead;
-          buffOutputStream.write(buffer, 0, bytesRead);
-        }
-        buffOutputStream.flush();
-        buffOutputStream.close();
-        fIn.close();
-        inputFile.delete();
-      } catch (Exception e) {
-        ErrorHandler.showErrorWindow("ERROR updating", "Unable to complete update -- unable to copy temp JAR file to current JAR file.", e);
-        ErrorHandler.fatalError();
-      }
-      System.out.println("Download Complete!");
-    } catch (Exception e) {
-      e.printStackTrace();
-      System.out.println("ERROR updating program!");
-      ErrorHandler.showErrorWindow("ERROR updating the program", "The program was unable to successfully download the update. If the problem continues, please manually download the latest version at " + UPDATE_LINK, e);
-      ErrorHandler.fatalError();
-    }
-  }
+//      buffOutputStream.flush();
+//      buffOutputStream.close();
+//      inputStream.close();
+////      if (update != null) {
+////        update.setStatusLabelText("Finishing up...");
+////      }
+//      try { // Code to make a copy of the current JAR file
+//        File inputFile = new File(path.substring(0, path.lastIndexOf(".jar")) + ".temp.jar");
+//        InputStream fIn = new BufferedInputStream(new FileInputStream(inputFile));
+//        File outputFile = new File(path);
+//        buffOutputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+//        buffer = new byte[32 * 1024];
+//        in = 0;
+//        while ((bytesRead = fIn.read(buffer)) != -1) {
+//          in += bytesRead;
+//          buffOutputStream.write(buffer, 0, bytesRead);
+//        }
+//        buffOutputStream.flush();
+//        buffOutputStream.close();
+//        fIn.close();
+//        inputFile.delete();
+//      } catch (Exception e) {
+//        ErrorHandler.printError("ERROR updating", "Unable to complete update -- unable to copy temp JAR file to current JAR file.", e);
+//        ErrorHandler.fatalError();
+//      }
+//      System.out.println("Download Complete!");
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//      System.out.println("ERROR updating program!");
+//      ErrorHandler.printError("ERROR updating the program", "The program was unable to successfully download the update. If the problem continues, please manually download the latest version at " + UPDATE_LINK, e);
+//      ErrorHandler.fatalError();
+//    }
+//  }
 }

@@ -13,7 +13,6 @@ public class SettingsHandler {
   private static boolean saveRefreshTime;
   private static boolean saveCheckShowclix;
   private static boolean saveCheckPax;
-  private static boolean savePlayAlarm;
   private static boolean saveEvent;
   private static boolean saveEmail;
   private static boolean saveCellnum;
@@ -23,16 +22,14 @@ public class SettingsHandler {
    * @param refreshTime True or false
    * @param showclix True or false
    * @param pax True or false
-   * @param alarm True or false
    * @param event True or false
    * @param email True or false
    * @param cellnum  True or false
    */
-  public static void setSaveAll(boolean refreshTime, boolean showclix, boolean pax, boolean alarm, boolean event, boolean email, boolean cellnum) {
+  public static void setSaveAll(boolean refreshTime, boolean showclix, boolean pax, boolean event, boolean email, boolean cellnum) {
     setSaveRefreshTime(refreshTime);
     setSaveShowclix(showclix);
     setSavePax(pax);
-    setSaveAlarm(alarm);
     setSaveEvent(event);
     setSaveEmail(email);
     setSaveCellnum(cellnum);
@@ -53,7 +50,6 @@ public class SettingsHandler {
    * @param refreshTime The time (in seconds) between refreshes
    * @param checkPax True to check the PAX website, false to not
    * @param checkShowclix True to check the Showclix website, false to not
-   * @param playAlarm True to play the alarm, false to not
    * @param expo The Expo being checked for. Note it should be in "PAX XXXX" format.
    * @param useBeta True to use BETA versions, false to not
    */
@@ -61,7 +57,7 @@ public class SettingsHandler {
     try {
       myPrefs.sync();
     } catch (BackingStoreException bSE) {
-      ErrorHandler.showErrorWindow("Unable to sync Preferences! Preferences will not be saved.");
+      ErrorHandler.printError("Unable to sync Preferences! Preferences will not be saved.");
       bSE.printStackTrace();
       return;
     }
@@ -109,16 +105,6 @@ public class SettingsHandler {
    */
   public static void setSavePax(boolean save) {
     saveCheckPax = save;
-  }
-
-  /**
-   * Sets whether or not to save the Play Alarm option. Note that you still must commit the changes using
-   * {@link #saveAllPrefs(int, boolean, boolean, boolean, java.lang.String, java.lang.String) saveAllPrefs()}.
-   *
-   * @param save True to save refresh time, false to not
-   */
-  public static void setSaveAlarm(boolean save) {
-    savePlayAlarm = save;
   }
 
   /**
@@ -187,19 +173,6 @@ public class SettingsHandler {
       myPrefs.putBoolean(PREFTYPES.PAXCHECK_CHECK_PAX.name(), check);
     } else {
       myPrefs.remove(PREFTYPES.PAXCHECK_CHECK_PAX.name());
-    }
-  }
-
-  /**
-   * Saves the Play Alarm option to the Preferences.
-   *
-   * @param alarm True to play the alarm, false to not
-   */
-  private static void savePlayAlarm(boolean alarm) {
-    if (savePlayAlarm) {
-      myPrefs.putBoolean(PREFTYPES.PAXCHECK_PLAY_ALARM.name(), alarm);
-    } else {
-      myPrefs.remove(PREFTYPES.PAXCHECK_PLAY_ALARM.name());
     }
   }
 
@@ -495,7 +468,7 @@ public class SettingsHandler {
   public static void setSavePrefs(boolean save) {
     myPrefs.putBoolean(PREFTYPES.PAXCHECK_SAVE_PREFS.name(), save);
     if (!save) {
-      setSaveAll(false, false, false, false, false, false, false);
+      setSaveAll(false, false, false, false, false, false);
     }
   }
 }

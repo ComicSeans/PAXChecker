@@ -143,7 +143,7 @@ public class Browser {
     } catch (IOException ioe) {
       return "IOException";
     } catch (Exception e) {
-      ErrorHandler.showErrorWindow("ERROR", "An unknown error has occurred while attempting to read the PAX website.", e);
+      ErrorHandler.printError("ERROR", "An unknown error has occurred while attempting to read the PAX website.", e);
       System.out.println("ERROR");
       return null;
     } finally {
@@ -339,7 +339,7 @@ public class Browser {
   public static boolean checkShowclixLink(String link) {
     String showLink = getShowclixLink();
     if (!showLink.equals(link)) {
-      ErrorHandler.showErrorWindow("NOTE", "NOTE: The last found Showclix link has changed! New link:\n" + showLink + "\nThe link will be opened in case the queue has been found.", null);
+      ErrorHandler.printError("NOTE", "NOTE: The last found Showclix link has changed! New link:\n" + showLink + "\nThe link will be opened in case the queue has been found.", null);
       openLinkInBrowser(showLink);
       return false;
     }
@@ -355,7 +355,7 @@ public class Browser {
     try {
       return "https://showclix.com/event/" + getLatestShowclixID(getExpo());
     } catch (Exception e) {
-      ErrorHandler.showErrorWindow("ERORR checking the Showclix website for updates!", e);
+      ErrorHandler.printError("ERORR checking the Showclix website for updates!", e);
       return null;
     }
   }
@@ -422,11 +422,11 @@ public class Browser {
       try {
         desktop.browse(new URI(link));
       } catch (Exception e) {
-        ErrorHandler.showErrorWindow("ERROR opening browser window", "Unable to open link in browser window!", e);
+        ErrorHandler.printError("ERROR opening browser window", "Unable to open link in browser window!", e);
       }
     } else {
       System.out.println("Unable to open link in default browser.");
-      ErrorHandler.showErrorWindow("ERROR", "Unable to open link in default browser.", null);
+      ErrorHandler.printError("ERROR", "Unable to open link in default browser.", null);
     }
   }
 
@@ -442,11 +442,11 @@ public class Browser {
       try {
         desktop.browse(url.toURI());
       } catch (Exception e) {
-        ErrorHandler.showErrorWindow("ERROR opening browser window", "Unable to open link in browser window!", e);
+        ErrorHandler.printError("ERROR opening browser window", "Unable to open link in browser window!", e);
       }
     } else {
       System.out.println("Unable to open link in default browser.");
-      ErrorHandler.showErrorWindow("ERROR", "Unable to open link in default browser.", null);
+      ErrorHandler.printError("ERROR", "Unable to open link in default browser.", null);
     }
   }
 }

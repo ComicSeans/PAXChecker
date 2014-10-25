@@ -52,7 +52,7 @@ public class Email {
     } else {
       if (!username.contains("::")) {
         System.out.println("ERROR parsing host -- no semicolon found!");
-        ErrorHandler.showErrorWindow("ERROR Using Custom Host", "Unable to parse the SMTP server from the given address (" + username + ")! Please make sure this was input correctly!", null);
+        ErrorHandler.printError("ERROR Using Custom Host", "Unable to parse the SMTP server from the given address (" + username + ")! Please make sure this was input correctly!", null);
         props.put("mail.smtp.user", "@yahoo.com");
         return;
       }
@@ -64,7 +64,7 @@ public class Email {
         System.out.println("Error parsing extra info in email.");
       }
       if (extraInfo == null) {
-        ErrorHandler.showErrorWindow("Not Enough Information", "The SMTP server is required for non-Yahoo or non-GMail addresses. Please put ::SMTP.ser.ver:PORT after the email specified.", null);
+        ErrorHandler.printError("Not Enough Information", "The SMTP server is required for non-Yahoo or non-GMail addresses. Please put ::SMTP.ser.ver:PORT after the email specified.", null);
         props.put("mail.smtp.user", "@yahoo.com");
         return;
       }
@@ -80,7 +80,7 @@ public class Email {
         setHost(tempHost);
       } catch (Exception e) {
         System.out.println("ERROR parsing host -- no semicolon found!");
-        ErrorHandler.showErrorWindow("ERROR Using Custom Host", "Unable to parse the smtp server from the given address (" + extraInfo + ")! Please make sure this was input correctly!", e);
+        ErrorHandler.printError("ERROR Using Custom Host", "Unable to parse the smtp server from the given address (" + extraInfo + ")! Please make sure this was input correctly!", e);
         props.put("mail.smtp.user", "@yahoo.com");
         return;
       }
@@ -160,7 +160,7 @@ public class Email {
       props.put("mail.smtp.password", password);
     } catch (Exception e) {
       System.out.println("ERROR encrypting password!");
-      ErrorHandler.showErrorWindow("ERROR encrypting password", "An error has occurred while attempting to encrypt your password.", e);
+      ErrorHandler.printError("ERROR encrypting password", "An error has occurred while attempting to encrypt your password.", e);
     }
   }
 
@@ -175,7 +175,7 @@ public class Email {
       return Encryption.decrypt(password);
     } catch (Exception e) {
       System.out.println("ERROR decrypting password!");
-      ErrorHandler.showErrorWindow("ERROR decrypting password", "And error has occurred while attempting to decrypt your password.", e);
+      ErrorHandler.printError("ERROR decrypting password", "And error has occurred while attempting to decrypt your password.", e);
     }
     return null;
   }
@@ -342,11 +342,11 @@ public class Email {
       transport.close();
     } catch (MessagingException mex) {
       mex.printStackTrace();
-      ErrorHandler.showErrorWindow("ERROR", "The message was unable to be sent.", mex);
+      ErrorHandler.printError("ERROR", "The message was unable to be sent.", mex);
       return false;
     } catch (Exception e) {
       e.printStackTrace();
-      ErrorHandler.showErrorWindow("ERROR", "An unknown error has occurred while attempting to send the message.", e);
+      ErrorHandler.printError("ERROR", "An unknown error has occurred while attempting to send the message.", e);
       return false;
     }//end catch block
     System.out.println("Finished sending message.");
