@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.net.MalformedURLException; // $codepro.audit.disable unnecessaryImport
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -142,9 +142,11 @@ public class Browser {
 				line = line.trim();
 				if (line.contains("class=\"btn red\"")
 						&& line.contains("title=\"Register Online\"")) {
+					br.close();
 					return line;
 				}
 			}
+			br.close();
 		} catch (UnknownHostException | MalformedURLException uhe) {
 			return "NoConnection";
 		} catch (IOException ioe) {
@@ -199,7 +201,7 @@ public class Browser {
 																// everything
 																// after the
 																// link
-			if (parse.startsWith("\"") && parse.endsWith("\"")) {
+			if ((parse.length() > 0 && parse.charAt(0) == '"') && parse.endsWith("\"")) {
 				parse = parse.substring(1, parse.length() - 1);
 			} else if (parse.length() < 10) {
 				System.out
@@ -304,7 +306,7 @@ public class Browser {
 		if (currEvent == -1) {
 			return false;
 		}
-		String eventUrl = "https://showclix.com/event/" + currEvent;
+		//String eventUrl = "https://showclix.com/event/" + currEvent;
 		// if (PAXChecker.status != null) {
 		// PAXChecker.status.setShowclixLink(eventUrl);
 		// }
@@ -476,7 +478,7 @@ public class Browser {
 		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop()
 				: null;
 		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-			if (link.startsWith("/") || link.startsWith("\\")) {
+			if ((link.length() > 0 && link.charAt(0) == '/') || (link.length() > 0 && link.charAt(0) == '\\')) {
 				link = websiteLink + link;
 			}
 			try {

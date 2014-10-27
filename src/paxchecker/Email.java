@@ -259,7 +259,7 @@ public class Email {
 	 */
 	public static String getProvider(String ending) {
 		try {
-			if (ending.startsWith("@")) {
+			if (ending.length() > 0 && ending.charAt(0) == '@') {
 				ending = ending.substring(1);
 			}
 			switch (ending.toLowerCase()) {

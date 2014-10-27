@@ -51,7 +51,7 @@ public class PAXChecker {
 		if (Browser.isCheckingPaxWebsite()) {
 			System.out.print("Check PAX Website (Y/N): ");
 			try {
-				if (!myScanner.next().toLowerCase().startsWith("n")) {
+				if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
 					Browser.enablePaxWebsiteChecking();
 				}
 				System.out.println();
@@ -61,7 +61,7 @@ public class PAXChecker {
 		if (Browser.isCheckingPaxWebsite()) {
 			System.out.print("Check Showclix Website (Y/N): ");
 			try {
-				if (!myScanner.next().toLowerCase().startsWith("n")) {
+				if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
 					Browser.enableShowclixWebsiteChecking();
 				}
 				System.out.println();
@@ -152,7 +152,7 @@ public class PAXChecker {
 					}
 				}
 			}
-		});
+		}, "PAXChecker-input-scanning");
 		continueProgram(new Runnable() {
 			@Override
 			public void run() {
@@ -202,7 +202,7 @@ public class PAXChecker {
 				} while (true); // Change later
 				System.out.println("Finished!");
 			}
-		});
+		}, "PAXChecker-check-for-tickets");
 	}
 
 	public static void parseCommandLineArgs(String[] args) {
@@ -211,7 +211,8 @@ public class PAXChecker {
 			System.out.println("Args!");
 			boolean checkPax = true;
 			boolean checkShowclix = true;
-			argsCycle: for (int a = 0; a < args.length; a++) {
+			argsCycle:
+			for (int a = 0; a < args.length; a++) {
 				System.out.println("args[" + a + "] = " + args[a]);
 				switch (args[a].toLowerCase()) {
 				case "-email":
@@ -225,7 +226,7 @@ public class PAXChecker {
 					break;
 				case "-cellnum":
 					for (int b = a + 1; b < args.length; b++) {
-						if (args[b].startsWith("-")) {
+						if (args[b].length() > 0 && args[b].charAt(0) == '-') {
 							a = b - 1;
 							continue argsCycle;
 						}
@@ -255,7 +256,7 @@ public class PAXChecker {
 					autoStart = true;
 					break;
 				default:
-					if (args[a].startsWith("-")) {
+					if (args[a].length() > 0 && args[a].charAt(0) == '-') {
 						System.out.println("Unknown argument: " + args[a]);
 					}
 					break;
@@ -295,9 +296,8 @@ public class PAXChecker {
 	 * @param run
 	 *            The Runnable object to use
 	 */
-	public static void continueProgram(Runnable run) {
-		Thread newThread = new Thread(run);
-		newThread.setName("Program Loop");
+	public static void continueProgram(Runnable run, String name) {
+		Thread newThread = new Thread(run, name);
 		newThread.setDaemon(false); // Prevent the JVM from stopping due to zero
 									// non-daemon threads running
 		newThread.setPriority(Thread.NORM_PRIORITY);
@@ -335,8 +335,7 @@ public class PAXChecker {
 	 *            The name to give the Thread
 	 */
 	public static void startBackgroundThread(Runnable run, String name) {
-		Thread newThread = new Thread(run);
-		newThread.setName(name);
+		Thread newThread = new Thread(run, name);
 		newThread.setDaemon(true); // Kill the JVM if only daemon threads are
 									// running
 		newThread.setPriority(Thread.MIN_PRIORITY); // Let other Threads take
