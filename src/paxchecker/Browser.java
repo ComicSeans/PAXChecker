@@ -20,8 +20,8 @@ import org.json.simple.parser.JSONParser;
  */
 public class Browser {
 
-	private static boolean checkPAXWebsite;
-	private static boolean checkShowclix;
+	private static boolean checkPAXWebsite = true;
+	private static boolean checkShowclix = true;
 	private static int lastShowclixEventID = 3852445;
 	private static String Expo;
 	private static String websiteLink;
