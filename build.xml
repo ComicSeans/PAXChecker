@@ -3,14 +3,17 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="I:/Sean Halloran/My Real Documents/Open Source Projects/PAXChecker/jar/paxchecker.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="jar/paxchecker.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="paxchecker.PAXChecker"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="I:/Sean Halloran/My Real Documents/Open Source Projects/PAXChecker/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="I:/Sean Halloran/My Real Documents/Open Source Projects/PAXChecker/external-lib/json-simple-1.1.1.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="I:/Sean Halloran/My Real Documents/Open Source Projects/PAXChecker/external-lib/mail.jar"/>
+            <fileset dir="bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="external-lib/json-simple-1.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="external-lib/mail.jar"/>
+        	<zipfileset excludes="META-INF/*.SF" src="external-lib/commons-cli-1.2-javadoc.jar"/>
+        	<zipfileset excludes="META-INF/*.SF" src="external-lib/commons-cli-1.2-sources.jar"/>
+    		<zipfileset excludes="META-INF/*.SF" src="external-lib/commons-cli-1.2.jar"/>
         </jar>
     </target>
 </project>

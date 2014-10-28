@@ -2,7 +2,10 @@ package paxchecker;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import static paxchecker.PrintHandler.verbosePrintln; 
+
+import static paxchecker.PrintHandler.verbosePrintln;
+
+import org.apache.commons.cli.*;
 
 /**
  *
@@ -27,6 +30,7 @@ public class PAXChecker {
 		promptUserForMissingInput();
 		startCommandLineWebsiteChecking();
 	}
+	
 
 	/**
 	 * Prompts the user for the required program information, including
@@ -202,61 +206,100 @@ public class PAXChecker {
 		if (args.length == 0) {
 			return;
 		}
-		boolean checkPax = true;
-		boolean checkShowclix = true;
-		PrintHandler.setVerbose(Arrays.asList(args).contains("-v"));
-		argsCycle:
-		for (int a = 0; a < args.length; a++) {
-			verbosePrintln("args[" + a + "] = " + args[a]);
-			switch (args[a].toLowerCase()) {
-			case "-email":
-				Email.setUsername(args[a + 1]);
-				verbosePrintln("Username set to " + Email.getUsername());
-				break;
-			case "-password":
-				Email.setPassword(args[a + 1]);
-				verbosePrintln("Password set");
-				break;
-			case "-cellnum":
-				for (int b = a + 1; b < args.length; b++) {
-					if (args[b].length() > 0 && args[b].charAt(0) == '-') {
-						a = b - 1;
-						continue argsCycle;
-					}
-					verbosePrintln("Adding email address " + args[b]);
-					Email.addEmailAddress(args[b]);
-				}
-				break;
-			case "-expo":
-				Browser.setExpo(args[a + 1]);
-				verbosePrintln("Expo set to " + Browser.getExpo());
-				break;
-			case "-nopax":
-				verbosePrintln("Setting check PAX website to false");
-				checkPax = false;
-				break;
-			case "-noshowclix":
-				verbosePrintln("Setting check Showclix website to false");
-				checkShowclix = false;
-				break;
-			case "-delay":
-				setRefreshTime(Integer.getInteger(args[a + 1], 15));
-				verbosePrintln("Set refresh time to "
-						+ getRefreshTime());
-				break;
-			default:
-				if (args[a].length() > 0 && args[a].charAt(0) == '-') {
-					System.out.println("Unknown argument: " + args[a]);
-				}
-				break;
-			}
+		
+		Options options = new Options();
+		options.addOption("nopax", false, "do not check pax website for tickets");
+		options.addOption("noshowclix", false, "do not check pax website for tickets");
+		options.addOption("v", false, "verbose");
+		options.addOption("email", true, "email address to send alerts from");
+		options.addOption("password", true, "password to email address to send alerts from");
+		options.addOption("expo", true, "Which PAX Expo to check");
+		options.addOption("delay", true, "Period between checking for tickets");
+		options.addOption("cellnum", true, "cell number to alert");
+		
+		CommandLineParser parser = new BasicParser();
+		CommandLine cmd;
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
+			return;
 		}
-		if (checkPax) {
+		
+		PrintHandler.setVerbose(cmd.hasOption("v"));
+		if(!cmd.hasOption("nopax"))
+		{
 			Browser.enablePaxWebsiteChecking();
 		}
-		if (checkShowclix) {
+		if(!cmd.hasOption("noshowclix"))
+		{
 			Browser.enableShowclixWebsiteChecking();
 		}
+		if(cmd.hasOption("email"))
+		{
+			Email.setUsername(cmd.getOptionValue("email"));
+			verbosePrintln("Username set to " + Email.getUsername());
+		}
+		if(cmd.hasOption("password"))
+		{
+			Email.setPassword(cmd.getOptionValue("password"));
+			verbosePrintln("Password set");
+		}
+		if(cmd.hasOption("cellnum"))
+		{
+			String cellnumbers[] = cmd.getOptionValues("cellnum");
+			for(String number : cellnumbers)
+			{
+				verbosePrintln("Adding email address " + number);
+				Email.addEmailAddress(number);
+			}
+		}
+
+
+//		argsCycle:
+//		for (int a = 0; a < args.length; a++) {
+//			verbosePrintln("args[" + a + "] = " + args[a]);
+//			switch (args[a].toLowerCase()) {
+//			case "-email":
+//				Email.setUsername(args[a + 1]);
+//				verbosePrintln("Username set to " + Email.getUsername());
+//				break;
+//			case "-password":
+//				Email.setPassword(args[a + 1]);
+//				verbosePrintln("Password set");
+//				break;
+//			case "-cellnum":
+//				for (int b = a + 1; b < args.length; b++) {
+//					if (args[b].length() > 0 && args[b].charAt(0) == '-') {
+//						a = b - 1;
+//						continue argsCycle;
+//					}
+//					verbosePrintln("Adding email address " + args[b]);
+//					Email.addEmailAddress(args[b]);
+//				}
+//				break;
+//			case "-expo":
+//				Browser.setExpo(args[a + 1]);
+//				verbosePrintln("Expo set to " + Browser.getExpo());
+//				break;
+//			case "-delay":
+//				setRefreshTime(Integer.getInteger(args[a + 1], 15));
+//				verbosePrintln("Set refresh time to "
+//						+ getRefreshTime());
+//				break;
+//			default:
+//				if (args[a].length() > 0 && args[a].charAt(0) == '-') {
+//					System.out.println("Unknown argument: " + args[a]);
+//				}
+//				break;
+//			}
+//		}
+//		if (checkPax) {
+//			Browser.enablePaxWebsiteChecking()
+//		}
+//		if (checkShowclix) {
+//			Browser.enableShowclixWebsiteChecking();
+//		}
 		if (!Browser.isCheckingPaxWebsite()
 				&& !Browser.isCheckingShowclix()) {
 			System.out
