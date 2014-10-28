@@ -215,7 +215,8 @@ public class PAXChecker {
 		options.addOption("password", true, "password to email address to send alerts from");
 		options.addOption("expo", true, "Which PAX Expo to check");
 		options.addOption("delay", true, "Period between checking for tickets");
-		options.addOption("cellnum", true, "cell number to alert");
+		//options.addOption("cellnum", true, "cell number to alert");
+		options.addOption(OptionBuilder.hasArgs().withArgName("cell number to alert").create("cellnum"));
 		
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd;
