@@ -416,7 +416,6 @@ public class Browser {
 									+ showLink
 									+ "\nThe link will be opened in case the queue has been found.",
 							null);
-			openLinkInBrowser(showLink);
 			return false;
 		}
 		return true;
@@ -492,57 +491,4 @@ public class Browser {
 		}
 	}
 
-	/**
-	 * Opens the link given in the computer's default browser. Note that this
-	 * will NOT work if the desktop environment isn't supported (generally a
-	 * non-issue).
-	 *
-	 * @param link
-	 *            The link to open in the computer's default browser
-	 */
-	public static void openLinkInBrowser(String link) {
-		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop()
-				: null;
-		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-			if ((link.length() > 0 && link.charAt(0) == '/') || (link.length() > 0 && link.charAt(0) == '\\')) {
-				link = websiteLink + link;
-			}
-			try {
-				desktop.browse(new URI(link));
-			} catch (Exception e) {
-				ErrorHandler.printError("ERROR opening browser window",
-						"Unable to open link in browser window!", e);
-			}
-		} else {
-			System.out.println("Unable to open link in default browser.");
-			ErrorHandler.printError("ERROR",
-					"Unable to open link in default browser.", null);
-		}
-	}
-
-	/**
-	 * Opens the URL given in the computer's default browser. Note that this
-	 * will NOT work if the desktop environment isn't supported (generally a
-	 * non-issue). Also note that this will simply open the URL -- it will not
-	 * parse through it to make sure it is valid!
-	 *
-	 * @param url
-	 *            The URL to open in the computer's default browser
-	 */
-	public static void openLinkInBrowser(URL url) {
-		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop()
-				: null;
-		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-			try {
-				desktop.browse(url.toURI());
-			} catch (Exception e) {
-				ErrorHandler.printError("ERROR opening browser window",
-						"Unable to open link in browser window!", e);
-			}
-		} else {
-			System.out.println("Unable to open link in default browser.");
-			ErrorHandler.printError("ERROR",
-					"Unable to open link in default browser.", null);
-		}
-	}
 }

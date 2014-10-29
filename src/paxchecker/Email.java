@@ -433,7 +433,7 @@ public class Email {
 	 */
 	public static void sendEmailInBackground(final String title,
 			final String message) {
-		PAXChecker.startBackgroundThread(new Runnable() {
+		ThreadHandler.startBackgroundThread(new Runnable() {
 			@Override
 			public void run() {
 				try {

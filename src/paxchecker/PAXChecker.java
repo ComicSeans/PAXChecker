@@ -17,6 +17,7 @@ public class PAXChecker {
 	private static volatile int secondsBetweenRefresh = 10;
 	private static volatile boolean forceRefresh;
 	private static final Scanner myScanner = new Scanner(System.in);
+	private static boolean exitThreads = false;
 
 	/**
 	 * @param args
@@ -40,109 +41,30 @@ public class PAXChecker {
 		
 	}
 	
-
-	/**
-	 * Prompts the user for the required program information, including
-	 * username, password, email, and other options. Note that this does NOT
-	 * start the command-line website checking.
-	 */
-//	public static void promptUserForMissingInput() {
-//		if (Email.getUsername() == null) {
-//			System.out.print("Email: ");
-//			Email.setUsername(myScanner.next());
-//			System.out.println("Password: ");
-//			Email.setPassword(myScanner.next());
-//		}
-//		if (Email.getAddressList().isEmpty()) {
-//			System.out.print("Cell Number: ");
-//			Email.addEmailAddress(myScanner.next());
-//			System.out.println();
-//		}
-////		if (Browser.isCheckingPaxWebsite()) {
-////			System.out.print("Check PAX Website (Y/N): ");
-////			if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
-////				Browser.enablePaxWebsiteChecking();
-////			}
-////			System.out.println();
-////		}
-////		if (Browser.isCheckingPaxWebsite()) {
-////			System.out.print("Check Showclix Website (Y/N): ");
-////			try {
-////				if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
-////					Browser.enableShowclixWebsiteChecking();
-////				}
-////				System.out.println();
-////			} catch (Exception e) {
-////			}
-////		}
-////		if (getRefreshTime() == 10) {
-////			System.out
-////					.print("Refresh Time (seconds, no input limit at the moment): ");
-////			try {
-////				setRefreshTime(Integer.parseInt(myScanner.next(), 10));
-////				System.out.println();
-////			} catch (Exception e) {
-////			}
-////		}
-//		if (Browser.getExpo() == null) {
-//			System.out.print("Expo: ");
-//			String input = myScanner.next();
-//			switch (input.toLowerCase().replaceAll(" ", "")) {
-//			case "prime":
-//			case "paxprime":
-//				Browser.setExpo("PAX Prime");
-//				break;
-//			case "east":
-//			case "paxeast":
-//				Browser.setExpo("PAX East");
-//				break;
-//			case "south":
-//			case "paxsouth":	
-//				Browser.setExpo("PAX South");
-//				break;
-//			case "aus":
-//			case "australia":
-//			case "paxaus":
-//			case "paxaustralia":
-//			case "thelanddownunder":
-//				Browser.setExpo("PAX Aus");
-//				break;
-//			default:
-//				System.out.println("Invalid expo! Setting to Prime...");
-//				Browser.setExpo("PAX Prime");
-//				break;
-//			}
-//			System.out.println("Set to search for Expo " + Browser.getExpo());
-//			System.out.println();
-//		}
-//	}
-
 	/**
 	 * Starts checking for website updates and listening for commands given
 	 * through the console.
 	 */
 	public static void startCommandLineWebsiteChecking() {
-		continueProgram(new Runnable() {
+		ThreadHandler.continueProgram(new Runnable() {
 			@Override
 			public void run() {
 				String input;
-				while (true) {
+				while (!exitThreads) {
 					try {
 						input = myScanner.next();
 					} catch (Exception e) {
-						// e.printStackTrace();
-						// System.out.println("Error parsing input -- please try again.");
 						continue;
 					}
 					switch (input.toLowerCase()) {
 					case "exit":
+						exitThreads = true;
 						System.exit(0);
 						break;
 					case "testtext":
 						sendBackgroundTestEmail();
 						break;
 					case "refresh":
-						break;
 					case "check":
 						forceRefresh = true;
 						break;
@@ -152,14 +74,14 @@ public class PAXChecker {
 						System.out.println("Commands:");
 						System.out.println("exit        - Exit the program");
 						System.out.println("testtext    - Send a test text");
-						System.out.println("refresh     - Force check");
 						System.out.println("check       - Force check");
 						System.out.println("Commands are NOT case sensitive.");
+						break;
 					}
 				}
 			}
 		}, "PAXChecker-input-scanning");
-		continueProgram(new Runnable() {
+		ThreadHandler.continueProgram(new Runnable() {
 			@Override
 			public void run() {
 				// System.gc();
@@ -170,7 +92,7 @@ public class PAXChecker {
 				// if secondsBetweenRefresh can be changed when do while is
 				// running
 
-				do {
+				while(!exitThreads) {
 					startMS = System.currentTimeMillis();
 					if (Browser.isPAXWebsiteUpdated()) {
 						final String link = Browser.parseHRef(Browser
@@ -179,8 +101,7 @@ public class PAXChecker {
 						Email.sendEmailInBackground("PAX Tickets ON SALE!",
 								"The PAX website has been updated! URL found: "
 										+ link);
-						Browser.openLinkInBrowser(link);
-						// Audio.playAlarm();
+						exitThreads = true;
 						break;
 					}
 					if (Browser.isShowclixUpdated()) {
@@ -189,8 +110,7 @@ public class PAXChecker {
 						Email.sendEmailInBackground("PAX Tickets ON SALE!",
 								"The Showclix website has been updated! URL found: "
 										+ link);
-						// Browser.openLinkInBrowser(link);
-						// Audio.playAlarm();
+						exitThreads = true;
 						break;
 					}
 					System.out.println("Data used: "
@@ -205,7 +125,7 @@ public class PAXChecker {
 						} catch (InterruptedException iE) {
 						}
 					}
-				} while (true); // Change later
+				}
 				System.out.println("Finished!");
 			}
 		}, "PAXChecker-check-for-tickets");
@@ -296,20 +216,6 @@ public class PAXChecker {
 	}
 
 	/**
-	 * Creates a new non-daemon Thread with the given Runnable object.
-	 *
-	 * @param run
-	 *            The Runnable object to use
-	 */
-	public static void continueProgram(Runnable run, String name) {
-		Thread newThread = new Thread(run, name);
-		newThread.setDaemon(false); // Prevent the JVM from stopping due to zero
-									// non-daemon threads running
-		newThread.setPriority(Thread.NORM_PRIORITY);
-		newThread.start(); // Start the Thread
-	}
-
-	/**
 	 * Sets the time between checking the PAX Registration website for updates.
 	 * This can be called at any time, however it is recommended to only call it
 	 * during Setup.
@@ -319,47 +225,6 @@ public class PAXChecker {
 	 */
 	public static void setRefreshTime(int seconds) {
 		secondsBetweenRefresh = seconds;
-	}
-
-	/**
-	 * This makes a new daemon, low-priority Thread and runs it.
-	 *
-	 * @param run
-	 *            The Runnable to make into a Thread and run
-	 */
-	public static void startBackgroundThread(Runnable run) {
-		startBackgroundThread(run, "General Background Thread");
-	}
-
-	/**
-	 * Starts a new daemon Thread.
-	 *
-	 * @param run
-	 *            The Runnable object to use
-	 * @param name
-	 *            The name to give the Thread
-	 */
-	public static void startBackgroundThread(Runnable run, String name) {
-		Thread newThread = new Thread(run, name);
-		newThread.setDaemon(true); // Kill the JVM if only daemon threads are
-									// running
-		newThread.setPriority(Thread.MIN_PRIORITY); // Let other Threads take
-													// priority, as this will
-													// probably not run for long
-		newThread.start(); // Start the Thread
-	}
-
-	/**
-	 * Saves program Preferences in the background. This uses the currently set
-	 * values within the program (ex: current username, current password, etc).
-	 */
-	public static void savePrefsInBackground() {
-		startBackgroundThread(new Runnable() {
-			@Override
-			public void run() {
-				SettingsHandler.saveAllPrefs();
-			}
-		}, "Save Preferences");
 	}
 
 	/**
