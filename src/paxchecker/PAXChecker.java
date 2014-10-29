@@ -17,7 +17,6 @@ public class PAXChecker {
 	private static volatile int secondsBetweenRefresh = 10;
 	private static volatile boolean forceRefresh;
 	private static final Scanner myScanner = new Scanner(System.in);
-	public static boolean verbose = false;
 
 	/**
 	 * @param args
@@ -26,9 +25,19 @@ public class PAXChecker {
 	public static void main(String[] args) {
 		System.out.println("Initializing...");
 		Email.init();
-		parseCommandLineArgs(args);
-		promptUserForMissingInput();
+		try {
+			parseCommandLineArgs(args);
+		} catch (ParseException e) {
+	        System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
+	        return;
+		}
+		if (!Browser.isCheckingPaxWebsite()
+				&& !Browser.isCheckingShowclix()) {
+			System.out.println("ERROR: Program is not checking PAX or Showclix website. Program will now exit.");
+			return;
+		}
 		startCommandLineWebsiteChecking();
+		
 	}
 	
 
@@ -37,76 +46,76 @@ public class PAXChecker {
 	 * username, password, email, and other options. Note that this does NOT
 	 * start the command-line website checking.
 	 */
-	public static void promptUserForMissingInput() {
-		if (Email.getUsername() == null) {
-			System.out.print("Email: ");
-			Email.setUsername(myScanner.next());
-			System.out.println("Password: ");
-			Email.setPassword(myScanner.next());
-		}
-		if (Email.getAddressList().isEmpty()) {
-			System.out.print("Cell Number: ");
-			Email.addEmailAddress(myScanner.next());
-			System.out.println();
-		}
-//		if (Browser.isCheckingPaxWebsite()) {
-//			System.out.print("Check PAX Website (Y/N): ");
-//			if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
-//				Browser.enablePaxWebsiteChecking();
-//			}
+//	public static void promptUserForMissingInput() {
+//		if (Email.getUsername() == null) {
+//			System.out.print("Email: ");
+//			Email.setUsername(myScanner.next());
+//			System.out.println("Password: ");
+//			Email.setPassword(myScanner.next());
+//		}
+//		if (Email.getAddressList().isEmpty()) {
+//			System.out.print("Cell Number: ");
+//			Email.addEmailAddress(myScanner.next());
 //			System.out.println();
 //		}
-//		if (Browser.isCheckingPaxWebsite()) {
-//			System.out.print("Check Showclix Website (Y/N): ");
-//			try {
-//				if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
-//					Browser.enableShowclixWebsiteChecking();
-//				}
-//				System.out.println();
-//			} catch (Exception e) {
+////		if (Browser.isCheckingPaxWebsite()) {
+////			System.out.print("Check PAX Website (Y/N): ");
+////			if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
+////				Browser.enablePaxWebsiteChecking();
+////			}
+////			System.out.println();
+////		}
+////		if (Browser.isCheckingPaxWebsite()) {
+////			System.out.print("Check Showclix Website (Y/N): ");
+////			try {
+////				if (myScanner.next().toLowerCase().length() == 0 || myScanner.next().toLowerCase().charAt(0) != 'n') {
+////					Browser.enableShowclixWebsiteChecking();
+////				}
+////				System.out.println();
+////			} catch (Exception e) {
+////			}
+////		}
+////		if (getRefreshTime() == 10) {
+////			System.out
+////					.print("Refresh Time (seconds, no input limit at the moment): ");
+////			try {
+////				setRefreshTime(Integer.parseInt(myScanner.next(), 10));
+////				System.out.println();
+////			} catch (Exception e) {
+////			}
+////		}
+//		if (Browser.getExpo() == null) {
+//			System.out.print("Expo: ");
+//			String input = myScanner.next();
+//			switch (input.toLowerCase().replaceAll(" ", "")) {
+//			case "prime":
+//			case "paxprime":
+//				Browser.setExpo("PAX Prime");
+//				break;
+//			case "east":
+//			case "paxeast":
+//				Browser.setExpo("PAX East");
+//				break;
+//			case "south":
+//			case "paxsouth":	
+//				Browser.setExpo("PAX South");
+//				break;
+//			case "aus":
+//			case "australia":
+//			case "paxaus":
+//			case "paxaustralia":
+//			case "thelanddownunder":
+//				Browser.setExpo("PAX Aus");
+//				break;
+//			default:
+//				System.out.println("Invalid expo! Setting to Prime...");
+//				Browser.setExpo("PAX Prime");
+//				break;
 //			}
+//			System.out.println("Set to search for Expo " + Browser.getExpo());
+//			System.out.println();
 //		}
-//		if (getRefreshTime() == 10) {
-//			System.out
-//					.print("Refresh Time (seconds, no input limit at the moment): ");
-//			try {
-//				setRefreshTime(Integer.parseInt(myScanner.next(), 10));
-//				System.out.println();
-//			} catch (Exception e) {
-//			}
-//		}
-		if (Browser.getExpo() == null) {
-			System.out.print("Expo: ");
-			String input = myScanner.next();
-			switch (input.toLowerCase().replaceAll(" ", "")) {
-			case "prime":
-			case "paxprime":
-				Browser.setExpo("PAX Prime");
-				break;
-			case "east":
-			case "paxeast":
-				Browser.setExpo("PAX East");
-				break;
-			case "south":
-			case "paxsouth":	
-				Browser.setExpo("PAX South");
-				break;
-			case "aus":
-			case "australia":
-			case "paxaus":
-			case "paxaustralia":
-			case "thelanddownunder":
-				Browser.setExpo("PAX Aus");
-				break;
-			default:
-				System.out.println("Invalid expo! Setting to Prime...");
-				Browser.setExpo("PAX Prime");
-				break;
-			}
-			System.out.println("Set to search for Expo " + Browser.getExpo());
-			System.out.println();
-		}
-	}
+//	}
 
 	/**
 	 * Starts checking for website updates and listening for commands given
@@ -202,30 +211,39 @@ public class PAXChecker {
 		}, "PAXChecker-check-for-tickets");
 	}
 
-	public static void parseCommandLineArgs(String[] args) {
-		if (args.length == 0) {
-			return;
-		}
-		
+	@SuppressWarnings("static-access")
+	public static void parseCommandLineArgs(String[] args) throws ParseException {		
 		Options options = new Options();
 		options.addOption("nopax", false, "do not check pax website for tickets");
 		options.addOption("noshowclix", false, "do not check pax website for tickets");
 		options.addOption("v", false, "verbose");
-		options.addOption("email", true, "email address to send alerts from");
-		options.addOption("password", true, "password to email address to send alerts from");
-		options.addOption("expo", true, "Which PAX Expo to check");
-		options.addOption("delay", true, "Period between checking for tickets");
-		//options.addOption("cellnum", true, "cell number to alert");
-		options.addOption(OptionBuilder.hasArgs().withArgName("cell number to alert").create("cellnum"));
+		options.addOption(OptionBuilder.hasArg()
+									   .isRequired()
+									   .withArgName("email address to send alerts from")
+									   .create("email"));
+		options.addOption(OptionBuilder.hasArg()
+									   .isRequired()
+									   .withArgName("password to email address to send alerts from")
+									   .create("password"));
+		options.addOption(OptionBuilder.hasArg()
+									   .isRequired()
+									   .withArgName("Which PAX Expo to check")
+									   .create("expo"));
+//		options.addOption("delay", true, "Period between checking for tickets");
+		options.addOption(OptionBuilder.hasArg()
+									   .withArgName("Period between checking for tickets")
+									   .withType(Number.class)
+									   .create("delay"));
+		options.addOption(OptionBuilder.hasArgs()
+									   .isRequired()
+									   .withArgName("cell number to alert")
+									   .create("alert"));
 		
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd;
-		try {
-			cmd = parser.parse(options, args);
-		} catch (ParseException e) {
-			System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
-			return;
-		}
+		
+		cmd = parser.parse(options, args);
+
 		
 		PrintHandler.setVerbose(cmd.hasOption("v"));
 		if(!cmd.hasOption("nopax"))
@@ -246,66 +264,24 @@ public class PAXChecker {
 			Email.setPassword(cmd.getOptionValue("password"));
 			verbosePrintln("Password set");
 		}
-		if(cmd.hasOption("cellnum"))
+		if(cmd.hasOption("alert"))
 		{
-			String cellnumbers[] = cmd.getOptionValues("cellnum");
-			for(String number : cellnumbers)
+			String alertEmails[] = cmd.getOptionValues("alert");
+			for(String alertEmail : alertEmails)
 			{
-				verbosePrintln("Adding email address " + number);
-				Email.addEmailAddress(number);
+				verbosePrintln("Adding email address to alert" + alertEmail);
+				Email.addEmailAddress(alertEmail);
 			}
 		}
-
-
-//		argsCycle:
-//		for (int a = 0; a < args.length; a++) {
-//			verbosePrintln("args[" + a + "] = " + args[a]);
-//			switch (args[a].toLowerCase()) {
-//			case "-email":
-//				Email.setUsername(args[a + 1]);
-//				verbosePrintln("Username set to " + Email.getUsername());
-//				break;
-//			case "-password":
-//				Email.setPassword(args[a + 1]);
-//				verbosePrintln("Password set");
-//				break;
-//			case "-cellnum":
-//				for (int b = a + 1; b < args.length; b++) {
-//					if (args[b].length() > 0 && args[b].charAt(0) == '-') {
-//						a = b - 1;
-//						continue argsCycle;
-//					}
-//					verbosePrintln("Adding email address " + args[b]);
-//					Email.addEmailAddress(args[b]);
-//				}
-//				break;
-//			case "-expo":
-//				Browser.setExpo(args[a + 1]);
-//				verbosePrintln("Expo set to " + Browser.getExpo());
-//				break;
-//			case "-delay":
-//				setRefreshTime(Integer.getInteger(args[a + 1], 15));
-//				verbosePrintln("Set refresh time to "
-//						+ getRefreshTime());
-//				break;
-//			default:
-//				if (args[a].length() > 0 && args[a].charAt(0) == '-') {
-//					System.out.println("Unknown argument: " + args[a]);
-//				}
-//				break;
-//			}
-//		}
-//		if (checkPax) {
-//			Browser.enablePaxWebsiteChecking()
-//		}
-//		if (checkShowclix) {
-//			Browser.enableShowclixWebsiteChecking();
-//		}
-		if (!Browser.isCheckingPaxWebsite()
-				&& !Browser.isCheckingShowclix()) {
-			System.out
-					.println("ERROR: Program is not checking PAX or Showclix website. Program will now exit.");
-			System.exit(0);
+		if(cmd.hasOption("expo"))
+		{
+			Browser.setExpo(cmd.getOptionValue("expo"));
+			verbosePrintln("Expo set to " + Browser.getExpo());
+		}
+		if(cmd.hasOption("delay"))
+		{
+			setRefreshTime(((Number)cmd.getParsedOptionValue("delay")).intValue());
+			verbosePrintln("Set refresh time to "+ getRefreshTime());
 		}
 	}
 
