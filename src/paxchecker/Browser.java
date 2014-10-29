@@ -40,13 +40,39 @@ public class Browser {
 	 * program for user feedback, so it's recommended to capitalize it
 	 * correctly.
 	 *
-	 * @param e
+	 * @param newExpo
 	 *            The String to set as the expo
 	 */
-	public static void setExpo(String e) {
-		Expo = e;
-		setShowclixID(getLatestShowclixID(e));
-		setWebsiteLink(getWebsiteLink(getExpo()));
+	public static void setExpo(String newExpo) {
+		
+		switch (newExpo.toLowerCase().replaceAll(" ", "")) {
+			case "prime":
+			case "paxprime":
+				Expo = "PAX Prime";
+				break;
+			case "east":
+			case "paxeast":
+				Expo = "PAX East";
+				break;
+			case "south":
+			case "paxsouth":	
+				Expo = "PAX South";
+				break;
+			case "aus":
+			case "australia":
+			case "paxaus":
+			case "paxaustralia":
+			case "thelanddownunder":
+				Expo = "PAX Aus";
+				break;
+			default:
+				System.out.println("Invalid expo! Setting to Prime...");
+				Browser.setExpo("PAX Prime");
+				break;
+		}
+		
+		setShowclixID(getLatestShowclixID(Expo));
+		setWebsiteLink(getWebsiteLink(Expo));
 	}
 
 	/**
