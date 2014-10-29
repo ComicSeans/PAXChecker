@@ -1,5 +1,13 @@
 package paxchecker;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -16,7 +24,7 @@ public class PAXChecker {
 	public static final String VERSION = "0.0.1";
 	private static volatile int secondsBetweenRefresh = 10;
 	private static volatile boolean forceRefresh;
-	private static final Scanner myScanner = new Scanner(System.in);
+	private static final Scanner cmdScanner = new Scanner(System.in);
 	private static boolean exitThreads = false;
 
 	/**
@@ -37,6 +45,11 @@ public class PAXChecker {
 			System.out.println("ERROR: Program is not checking PAX or Showclix website. Program will now exit.");
 			return;
 		}
+		if(Email.getAddressList().isEmpty())
+		{
+			System.out.println("No emails to alert! Program will now exit");
+			return;
+		}
 		startCommandLineWebsiteChecking();
 		
 	}
@@ -52,7 +65,7 @@ public class PAXChecker {
 				String input;
 				while (!exitThreads) {
 					try {
-						input = myScanner.next();
+						input = cmdScanner.next();
 					} catch (Exception e) {
 						continue;
 					}
@@ -149,15 +162,16 @@ public class PAXChecker {
 									   .isRequired()
 									   .withArgName("Which PAX Expo to check")
 									   .create("expo"));
-//		options.addOption("delay", true, "Period between checking for tickets");
 		options.addOption(OptionBuilder.hasArg()
 									   .withArgName("Period between checking for tickets")
 									   .withType(Number.class)
 									   .create("delay"));
 		options.addOption(OptionBuilder.hasArgs()
-									   .isRequired()
 									   .withArgName("cell number to alert")
-									   .create("alert"));
+									   .create("notify"));
+		options.addOption(OptionBuilder.hasArg()
+									   .withArgName("file of emails to alert")
+									   .create("alertfile"));
 		
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd;
@@ -184,9 +198,9 @@ public class PAXChecker {
 			Email.setPassword(cmd.getOptionValue("password"));
 			verbosePrintln("Password set");
 		}
-		if(cmd.hasOption("alert"))
+		if(cmd.hasOption("notify"))
 		{
-			String alertEmails[] = cmd.getOptionValues("alert");
+			String alertEmails[] = cmd.getOptionValues("notify");
 			for(String alertEmail : alertEmails)
 			{
 				verbosePrintln("Adding email address to alert" + alertEmail);
@@ -202,6 +216,22 @@ public class PAXChecker {
 		{
 			setRefreshTime(((Number)cmd.getParsedOptionValue("delay")).intValue());
 			verbosePrintln("Set refresh time to "+ getRefreshTime());
+		}
+		if(cmd.hasOption("alertfile"))
+		{
+			verbosePrintln("processing alert email file....!");
+			String filename = cmd.getOptionValue("alertfile");
+			try {
+				FileInputStream fis = new FileInputStream(filename);
+				BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					verbosePrintln("Adding email to alert: "+line);
+					Email.addEmailAddress(line);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
