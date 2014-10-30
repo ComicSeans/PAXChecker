@@ -92,7 +92,8 @@ public class PAXChecker {
 						exitThreads = true;
 						System.exit(0);
 						break;
-					case "testtext":
+					case "testalert":
+					case "test":
 						sendBackgroundTestEmail();
 						break;
 					case "refresh":
@@ -100,11 +101,10 @@ public class PAXChecker {
 						forceRefresh = true;
 						break;
 					default:
-						System.out.println("Unknown command: "
-								+ input.toLowerCase());
+						System.out.println("Unknown command: " + input.toLowerCase());
 						System.out.println("Commands:");
 						System.out.println("exit        - Exit the program");
-						System.out.println("testtext    - Send a test text");
+						System.out.println("testalert   - Send a test email to all addresses");
 						System.out.println("check       - Force check");
 						System.out.println("Commands are NOT case sensitive.");
 						break;
@@ -203,7 +203,7 @@ public class PAXChecker {
 									   .withType(Number.class)
 									   .create("delay"));
 		options.addOption(OptionBuilder.hasArgs()
-									   .withArgName("cell number to alert")
+									   .withArgName("email number to alert")
 									   .create("notify"));
 		options.addOption(OptionBuilder.hasArg()
 									   .withArgName("file of emails to alert")
@@ -212,7 +212,7 @@ public class PAXChecker {
 		CommandLineParser parser = new BasicParser();
 		
 		CommandLine helpCmd = parser.parse(helpOptions, args, true);
-		if(helpCmd.hasOption("help"))
+		if(helpCmd.hasOption("help") || args.length == 0)
 		{
 			HelpFormatter hf = new HelpFormatter();
 			hf.printHelp("gnu", options);

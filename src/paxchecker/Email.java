@@ -354,7 +354,7 @@ public class Email {
 	public static boolean testEmail() {
 		if (sendMessage(
 				"Test",
-				"The test is successful. The PAX Checker is now set up to text your phone when the website updates!")) {
+				"The test is successful. The PAX Checker is now set up to alert you when the website updates!")) {
 			System.out.println("Text message successfully sent!");
 			return true;
 		} else {
