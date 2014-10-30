@@ -11,8 +11,6 @@
             <fileset dir="bin"/>
             <zipfileset excludes="META-INF/*.SF" src="external-lib/json-simple-1.1.1.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="external-lib/mail.jar"/>
-        	<zipfileset excludes="META-INF/*.SF" src="external-lib/commons-cli-1.2-javadoc.jar"/>
-        	<zipfileset excludes="META-INF/*.SF" src="external-lib/commons-cli-1.2-sources.jar"/>
     		<zipfileset excludes="META-INF/*.SF" src="external-lib/commons-cli-1.2.jar"/>
         </jar>
     </target>
