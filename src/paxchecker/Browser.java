@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * PAXCheckerCMD
+ *
+ * This software is created under an MIT License. Originally created by
+ * Sunnybat, this version has been forked and modified by ComicSeans.
+ *
+ * Contributors:
+ *		SunnyBat
+ *		ComicSeans
+ *******************************************************************************/
+
 package paxchecker;
 
 import java.io.BufferedReader;
@@ -13,6 +24,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 /**
+ * A class for fetching and parsing website links to search for tickets
  *
  * @author SunnyBat
  */
@@ -21,12 +33,11 @@ public class Browser {
 	private static boolean checkPAXWebsite = true;
 	private static boolean checkShowclix = true;
 	private static int lastShowclixEventID = 3852445;
-	private static String Expo;
-	private static String websiteLink;
-	private static final String SHOWCLIX_API_LINK_PRIME = "http://api.showclix.com/Seller/16886/events"; // Also
-																											// for
-																											// PAX
-																											// Dev
+	private static String Expo = "PAX Prime";
+	private static String websiteLink = null;
+	
+	 // PAX_PRIME link also for PAX Dev
+	private static final String SHOWCLIX_API_LINK_PRIME = "http://api.showclix.com/Seller/16886/events";
 	private static final String SHOWCLIX_API_LINK_EAST = "http://api.showclix.com/Seller/17792/events";
 	private static final String SHOWCLIX_API_LINK_SOUTH = "http://api.showclix.com/Seller/19042/events";
 	private static final String SHOWCLIX_API_LINK_AUS = "http://api.showclix.com/Seller/15374/events";

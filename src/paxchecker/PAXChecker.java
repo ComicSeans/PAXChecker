@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * PAXCheckerCMD
+ *
+ * This software is created under an MIT License. Originally created by
+ * Sunnybat, this version has been forked and modified by ComicSeans.
+ *
+ * Contributors:
+ *		SunnyBat
+ *		ComicSeans
+ *******************************************************************************/
+
 package paxchecker;
 
 import static paxchecker.PrintHandler.verbosePrintln;
@@ -11,6 +22,7 @@ import java.util.Scanner;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -18,6 +30,7 @@ import org.apache.commons.cli.ParseException;
 /**
  *
  * @author SunnyBat
+ * @author ComicSeans
  */
 public class PAXChecker {
 
@@ -26,6 +39,7 @@ public class PAXChecker {
 	private static volatile boolean forceRefresh;
 	private static final Scanner cmdScanner = new Scanner(System.in);
 	private static boolean exitThreads = false;
+	private static boolean printingHelp = false;
 
 	/**
 	 * @param args
@@ -40,9 +54,13 @@ public class PAXChecker {
 	        System.err.println( "Parsing failed.  Reason: " + e.getMessage() );
 	        return;
 		}
+		if(printingHelp)
+		{
+			return;
+		}
 		if (!Browser.isCheckingPaxWebsite()
 				&& !Browser.isCheckingShowclix()) {
-			System.out.println("ERROR: Program is not checking PAX or Showclix website. Program will now exit.");
+			System.out.println("Program is not checking PAX or Showclix website. Program will now exit.");
 			return;
 		}
 		if(Email.getAddressList().isEmpty())
@@ -146,6 +164,9 @@ public class PAXChecker {
 
 	@SuppressWarnings("static-access")
 	public static void parseCommandLineArgs(String[] args) throws ParseException {		
+		Options helpOptions = new Options();
+		helpOptions.addOption("help", false, "helptext");
+		
 		Options options = new Options();
 		options.addOption("nopax", false, "do not check pax website for tickets");
 		options.addOption("noshowclix", false, "do not check pax website for tickets");
@@ -174,11 +195,19 @@ public class PAXChecker {
 									   .create("alertfile"));
 		
 		CommandLineParser parser = new BasicParser();
-		CommandLine cmd;
+		//CommandLine cmd;
 		
-		cmd = parser.parse(options, args);
+		CommandLine helpCmd = parser.parse(helpOptions, args);
+		if(helpCmd.hasOption("help"))
+		{
+			HelpFormatter hf = new HelpFormatter();
+			hf.printHelp("gnu", options);
+			printingHelp = true;
+			return;
+		}
+		
+		CommandLine cmd = parser.parse(options, args);
 
-		
 		PrintHandler.setVerbose(cmd.hasOption("v"));
 		if(!cmd.hasOption("nopax"))
 		{

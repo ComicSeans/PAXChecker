@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * PAXCheckerCMD
+ *
+ * This software is created under an MIT License. Originally created by
+ * Sunnybat, this version has been forked and modified by ComicSeans.
+ *
+ * Contributors:
+ *		SunnyBat
+ *		ComicSeans
+ *******************************************************************************/
+
 package paxchecker;
 
 import java.util.ArrayList;
@@ -14,6 +25,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
+ * A class for sending emails
  *
  * @author SunnyBat
  */

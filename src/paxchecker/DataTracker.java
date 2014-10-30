@@ -1,11 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * PAXCheckerCMD
+ *
+ * This software is created under an MIT License. Originally created by
+ * Sunnybat, this version has been forked and modified by ComicSeans.
+ *
+ * Contributors:
+ *		SunnyBat
+ *		ComicSeans
+ *******************************************************************************/
+
 package paxchecker;
 
 /**
+ * A class for tracking the ammount of data used by the browser.
  *
  * @author SunnyBat
  */
@@ -40,36 +47,8 @@ public class DataTracker {
 	 * @return The amount of data in megabytes used by the program
 	 */
 	public static double getDataUsedMB() {
-		return (double) ((int) ((double) getDataUsed() / 1024 / 1024 * 100)) / 100; // *100
-																					// to
-																					// make
-																					// the
-																					// double
-																					// have
-																					// two
-																					// extra
-																					// numbers,
-																					// round
-																					// with
-																					// typecasting
-																					// to
-																					// integer,
-																					// then
-																					// divide
-																					// that
-																					// by
-																					// 100
-																					// and
-																					// typecast
-																					// to
-																					// double
-																					// to
-																					// get
-																					// a
-																					// double
-																					// with
-																					// two
-																					// decimal
-																					// places
+		return (double) ((int) ((double) getDataUsed() / 1024 / 1024 * 100)) / 100;
+		// *100 to make the double have two extra numbers, round with typecasting to integer,
+		// then divide that by 100 and typecast to double to get a double with two decimal places
 	}
 }

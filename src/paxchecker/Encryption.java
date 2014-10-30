@@ -1,8 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * PAXCheckerCMD
+ *
+ * This software is created under an MIT License. Originally created by
+ * Sunnybat, this version has been forked and modified by ComicSeans.
+ *
+ * Contributors:
+ *		SunnyBat
+ *		ComicSeans
+ *******************************************************************************/
+
 package paxchecker;
 
 import java.io.IOException;
