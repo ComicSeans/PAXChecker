@@ -115,7 +115,6 @@ public class PAXChecker {
 		ThreadHandler.continueProgram(new Runnable() {
 			@Override
 			public void run() {
-				// System.gc();
 				long startMS;
 				int seconds = getRefreshTime();
 				// Saves time from accessing volatile variable; can be moved to
@@ -123,6 +122,8 @@ public class PAXChecker {
 				// if secondsBetweenRefresh can be changed when do while is
 				// running
 
+				System.out.println("PAX Ticket Scanning begun on "+seconds+" second(s) interval");
+				System.out.println();
 				while(!exitThreads) {
 					startMS = System.currentTimeMillis();
 					if (Browser.isPAXWebsiteUpdated()) {
@@ -144,8 +145,13 @@ public class PAXChecker {
 						exitThreads = true;
 						break;
 					}
+					else
+					{
+						System.out.println("Showclix website: no new events");
+					}
 					System.out.println("Data used: "
 							+ DataTracker.getDataUsedMB() + "MB");
+					System.out.println();
 					while (System.currentTimeMillis() - startMS < (seconds * 1000)) {
 						if (forceRefresh) {
 							forceRefresh = false;
@@ -154,6 +160,7 @@ public class PAXChecker {
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException iE) {
+							iE.printStackTrace();
 						}
 					}
 				}
@@ -162,8 +169,16 @@ public class PAXChecker {
 		}, "PAXChecker-check-for-tickets");
 	}
 
+	/**
+	 * Configures PAXCheckerCMD based on command line input
+	 * 
+	 * @param args
+	 * 			cmd line args
+	 * @throws ParseException
+	 * 			if args cannot be parsed
+	 */
 	@SuppressWarnings("static-access")
-	public static void parseCommandLineArgs(String[] args) throws ParseException {		
+	public static void parseCommandLineArgs(String[] args) throws ParseException {
 		Options helpOptions = new Options();
 		helpOptions.addOption("help", false, "helptext");
 		
@@ -195,9 +210,8 @@ public class PAXChecker {
 									   .create("alertfile"));
 		
 		CommandLineParser parser = new BasicParser();
-		//CommandLine cmd;
 		
-		CommandLine helpCmd = parser.parse(helpOptions, args);
+		CommandLine helpCmd = parser.parse(helpOptions, args, true);
 		if(helpCmd.hasOption("help"))
 		{
 			HelpFormatter hf = new HelpFormatter();
@@ -205,7 +219,7 @@ public class PAXChecker {
 			printingHelp = true;
 			return;
 		}
-		
+		 
 		CommandLine cmd = parser.parse(options, args);
 
 		PrintHandler.setVerbose(cmd.hasOption("v"));

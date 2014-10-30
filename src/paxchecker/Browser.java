@@ -11,6 +11,7 @@
 
 package paxchecker;
 
+import static paxchecker.PrintHandler.verbosePrintln;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException; // $codepro.audit.disable unnecessaryImport
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -137,10 +139,10 @@ public class Browser {
 			return false;
 		} else if (lineText.equals("IOException")
 				|| lineText.equals("NoConnection")) {
-			System.out.println("Unable to connect: " + lineText);
+			System.out.println("Unable to connect to pax website: " + lineText);
 			return false;
 		} else if (lineText.equals("NoFind")) {
-			System.out.println("Unable to find the Register Online button!");
+			System.out.println("PAX Website: Unable to find the Register Online button!");
 			return false;
 		} else if (!lineText.contains("\"" + websiteLink + "\"")) {
 			System.out.println("OMG IT'S UPDATED: " + lineText);
@@ -166,7 +168,6 @@ public class Browser {
 		String line;
 		try {
 			url = new URL(websiteLink + "/registration");
-			// is = url.openStream();
 			HttpURLConnection httpCon1 = (HttpURLConnection) url
 					.openConnection();
 			httpCon1.addRequestProperty("User-Agent", "Mozilla/4.0");
@@ -181,7 +182,6 @@ public class Browser {
 					return line;
 				}
 			}
-			br.close();
 		} catch (UnknownHostException | MalformedURLException uhe) {
 			return "NoConnection";
 		} catch (IOException ioe) {
@@ -206,7 +206,6 @@ public class Browser {
 				ioe.printStackTrace();
 			}
 		}
-		System.out.println("Website \"Register Now\" button not found!");
 		return "NoFind";
 	}
 
@@ -243,8 +242,6 @@ public class Browser {
 						.println("Unable to correctly parse link from button HTML.");
 				return websiteLink;
 			}
-			// System.out.println("Link parsed from Register Online button: " +
-			// parse);
 			return parse.trim(); // PAX Aus currently has a space at the end of
 									// the registration button link... It
 									// doesn't sit well with Browser.java
@@ -341,10 +338,6 @@ public class Browser {
 		if (currEvent == -1) {
 			return false;
 		}
-		//String eventUrl = "https://showclix.com/event/" + currEvent;
-		// if (PAXChecker.status != null) {
-		// PAXChecker.status.setShowclixLink(eventUrl);
-		// }
 		return currEvent != lastShowclixEventID;
 	}
 
@@ -392,12 +385,11 @@ public class Browser {
 			}
 			reader.close();
 			JSONParser mP = new JSONParser();
-			JSONObject obj = (JSONObject) mP.parse(jsonText);
+			Map obj = (JSONObject) mP.parse(jsonText);
 			int maxId = 0;
 			for (String s : (Iterable<String>) obj.keySet()) {
 				maxId = Math.max(maxId, Integer.parseInt((String) s));
 			}
-			System.out.println("Max ID = " + maxId);
 			return maxId;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -462,7 +454,7 @@ public class Browser {
 			return;
 		}
 		lastShowclixEventID = ID;
-		System.out.println("ShowclixID set to " + ID);
+		verbosePrintln("ShowclixID set to " + ID);
 	}
 
 	/**

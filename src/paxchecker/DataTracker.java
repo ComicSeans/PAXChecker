@@ -18,7 +18,7 @@ package paxchecker;
  */
 public class DataTracker {
 
-	private static long dataUsed;
+	private static long dataUsed = 0;
 
 	/**
 	 * Adds an amount of data (in bytes) used by the program. This should be

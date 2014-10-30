@@ -51,6 +51,8 @@ public class ThreadHandler {
 	 *
 	 * @param run
 	 *            The Runnable object to use
+	 * @param name
+	 * 		      name of the thread to start
 	 */
 	public static void continueProgram(Runnable run, String name) {
 		Thread newThread = new Thread(run, name);

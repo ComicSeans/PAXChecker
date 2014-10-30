@@ -11,6 +11,7 @@
 
 package paxchecker;
 
+import static paxchecker.PrintHandler.verbosePrintln;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -92,7 +93,7 @@ public class Email {
 			try {
 				extraInfo = username.toLowerCase().substring(
 						username.indexOf("::") + 2);
-				System.out.println("extraInfo: " + extraInfo);
+				verbosePrintln("extraInfo: " + extraInfo);
 			} catch (Exception e) {
 				System.out.println("Error parsing extra info in email.");
 			}
@@ -110,7 +111,7 @@ public class Email {
 				if (extraInfo.contains(":")) {
 					tempHost = extraInfo.substring(0, extraInfo.indexOf(":"));
 					setPort(extraInfo.substring(extraInfo.indexOf(":") + 1));
-					System.out.println("Port set to " + getPort());
+					verbosePrintln("Port set to " + getPort());
 				} else {
 					tempHost = extraInfo;
 				}
@@ -128,10 +129,10 @@ public class Email {
 				return;
 			}
 			username = username.substring(0, username.indexOf("::"));
-			// System.out.println("ERROR: Yahoo or Google email required!");
-			// System.exit(0);
+			 System.out.println("ERROR: Yahoo or Google email required!");
+			 System.exit(0);
 		}
-		System.out.println("Username = " + username);
+		verbosePrintln("Username = " + username);
 		props.put("mail.smtp.user", username);
 	}
 
@@ -159,7 +160,7 @@ public class Email {
 			return;
 		}
 		props.put("mail.smtp.ssl.trust", h);
-		System.out.println("Host set to " + h);
+		verbosePrintln("Host set to " + h);
 	}
 
 	/**
@@ -302,6 +303,7 @@ public class Email {
 	 *
 	 * @param carrier
 	 * @return
+	 * 			the extention including the '@' for the carrier
 	 */
 	public static String getCarrierExtension(String carrier) {
 		switch (carrier.toLowerCase()) {
@@ -345,6 +347,9 @@ public class Email {
 	/**
 	 * Sends a test email to every number put into the program and prints
 	 * whether it was successful or not to the Status window.
+	 * 
+	 * @return
+	 * 			true if success
 	 */
 	public static boolean testEmail() {
 		if (sendMessage(
@@ -514,20 +519,24 @@ public class Email {
 						+ " does not contain ending! Adding AT&T ending...");
 				address += getCarrierExtension("AT&T (MMS)");
 			}
-			System.out.println("Old Number: " + address);
+			verbosePrintln("Old Number: " + address);
 			address = address.trim();
 			String temp = address.substring(0, address.indexOf("@"));
-			temp = temp.replace("-", ""); // Avoid replacing chars in
-											// @car.rier.ext
+			temp = temp.replace("-", ""); // Avoid replacing chars in @car.rier.ext
 			temp = temp.replace("(", "");
 			temp = temp.replace(")", "");
 			address = temp + address.substring(address.indexOf("@"));
-			System.out.println("New Number: " + address);
+			verbosePrintln("New Number: " + address);
 			completeAddress = address;
 		}
 
+		/**
+		 * Checks the address is not null and contains an @
+		 * 
+		 * @return if the email address for sending is valid
+		 */
 		public boolean isValid() {
-			System.out.println("completeAddress = " + completeAddress);
+			verbosePrintln("completeAddress = " + completeAddress);
 			return completeAddress != null && completeAddress.contains("@");
 		}
 	}
@@ -587,6 +596,12 @@ public class Email {
 		}
 	}
 
+	/**
+	 * Remove an email from the list of emails to alert
+	 * 
+	 * @param remove
+	 * 				address to remove from the list of emails to alert
+	 */
 	public static void removeEmailAddress(String remove) {
 		if (remove == null) {
 			return;
